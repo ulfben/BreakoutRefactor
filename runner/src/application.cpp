@@ -29,44 +29,33 @@ namespace runner
         if(!m_window.isOpen() || !enter()){
             return;
         }
-
         m_window.setKeyRepeatEnabled(false);
-
         while(m_window.isOpen()){
-            sf::Event event;
-
-            while(m_window.pollEvent(event)){
-                if(event.type == sf::Event::MouseMoved){
-                    on_mouse_move({float(event.mouseMove.x), float(event.mouseMove.y)});
-                } else if(event.type == sf::Event::MouseButtonPressed){
-                    on_button_pressed(event.mouseButton.button);
-                } else if(event.type == sf::Event::MouseButtonReleased){
-                    on_button_released(event.mouseButton.button);
-                } else if(event.type == sf::Event::KeyPressed){
-                    on_key_pressed(event.key.code);
-                } else if(event.type == sf::Event::KeyReleased){
-                    on_key_released(event.key.code);
-                } else if(event.type == sf::Event::Closed){
-                    m_window.close();
-                }
-            }
-
+            input();
             if(!update()){
                 m_window.close();
             }
-
             render();
         }
+    }
 
-        exit();
+    void Application::input() noexcept{
+        sf::Event event;
+        while(m_window.pollEvent(event)){
+            if(event.type == sf::Event::KeyPressed){
+                on_key_pressed(event.key.code);
+            } else if(event.type == sf::Event::KeyReleased){
+                on_key_released(event.key.code);
+            } else if(event.type == sf::Event::Closed){
+                m_window.close();
+            }
+        }
     }
 
     bool Application::enter(){
         SetUp();
         return true;
     }
-
-    void Application::exit(){}
 
     void Application::SetUp(){
         m_CurrentGameState = TheGamesStates::pregame;
@@ -77,7 +66,6 @@ namespace runner
         m_AssetsManagement.LoadTexture(kFallingStarID, "assets/FallingStar.png");
         m_AssetsManagement.LoadFontFile("assets/sunny-spells-font/SunnyspellsRegular-MV9ze.otf");
 
-        // Made simple that function that just set indivual each sf::Text variable for text in the screen
         m_startMainuText = m_AssetsManagement.SetText("Press `space´ to start", 100, sf::Text::Bold, 250, 250);
         m_WinText = m_AssetsManagement.SetText("Winner", 50, sf::Text::Bold, 550, 300);
         m_LoseText = m_AssetsManagement.SetText("Game Over", 50, sf::Text::Bold, 550, 300);
@@ -100,16 +88,15 @@ namespace runner
         m_deltatime = m_clock.restart();
         if(m_CurrentGameState == TheGamesStates::running){
             m_parallaxBackground.Update(m_deltatime.asSeconds());
-            m_ScoreText.setString("Score: " + intToString(m_currentScore));
+            m_ScoreText.setString("Score: " + std::to_string(m_currentScore));
             m_player.PlayerUpdate(m_deltatime.asSeconds());
             m_ball.BallUpdate(m_deltatime.asSeconds());
             CollisionCheck();
         } else{
-            m_highScoreText.setString("HighScore: " + intToString(m_highScoreInt));
+            m_highScoreText.setString("HighScore: " + std::to_string(m_highScoreInt));
         }
 
         if(m_brick.m_brickObject.empty()){
-          //win
             m_CurrentGameState = TheGamesStates::win;
         }
 
@@ -118,7 +105,6 @@ namespace runner
 
     void Application::render(){
         m_batch.clear();
-        {}
         m_window.clear(sf::Color{0x44, 0x55, 0x66, 0xff});
 
         if(m_CurrentGameState == TheGamesStates::pregame){
@@ -157,11 +143,7 @@ namespace runner
         m_batch.present(m_window);
         m_window.display();
     }
-
-    void Application::on_mouse_move(const sf::Vector2f& position){
-        m_mouse_position = position;
-    }
-
+    
     void Application::on_key_pressed(const sf::Keyboard::Key key){
         if(key == sf::Keyboard::Key::Escape){
             m_running = false;
@@ -201,16 +183,6 @@ namespace runner
         }
     }
 
-    void Application::on_button_pressed(const  sf::Mouse::Button button){
-
-    }
-
-    void Application::on_button_released(const sf::Mouse::Button button){
-
-    }
-
-
-
     void Application::Restart(){
         m_currentScore = 0;
         m_ball.Restart();
@@ -220,14 +192,11 @@ namespace runner
 
     void Application::CollisionCheck(){
         float r1RightEdge = m_player.m_playerSprite.getPosition().y + m_player.m_playerSprite.getTexture()->getSize().y;
-        if(r1RightEdge >= m_ball.m_ballSprite.getPosition().y){
-            std::cout << " right side someting" << std::endl;
-        };
+
         if(AxisAlignedBoundingBox(m_player.m_playerSprite, m_ball.m_ballSprite)){
 
             m_ball.hasCollided = true;
             m_ball.m_direction.y = -m_ball.m_direction.y;
-            //std::cout << "hitted a player" << std::endl;
         }
 
         for(int i = 0; i < m_brick.m_brickObject.size(); i++){
@@ -236,7 +205,6 @@ namespace runner
                 m_ball.m_speed += 10.0f;
                 m_brick.m_brickObject.erase(m_brick.m_brickObject.begin() + i);
                 m_currentScore++;
-                //std::cout << "hitted a brick" << std::endl;
             }
         }
         for(int i = 0; i < m_parallaxBackground.m_fallingStarYellow.size(); i++){
@@ -252,7 +220,6 @@ namespace runner
         // If the player is out of bounds or edge of the bottom screen that should give trigger fail condition.
         if(m_ball.m_ballSprite.getPosition().y >= m_window.getSize().y){
             m_CurrentGameState = TheGamesStates::lose;
-            //std::cout << "lose" << std::endl;
         }
     }
 
@@ -279,11 +246,6 @@ namespace runner
         writeFile.close();
     }
 
-    std::string Application::intToString(int score){
-        std::string string = std::to_string(score);
-        return string;
-    }
-
     bool Application::AxisAlignedBoundingBox(sf::Sprite& box1, sf::Sprite& box2){
         bool collisionX = box1.getPosition().x + box1.getTexture()->getSize().x >= box2.getPosition().x &&
             box2.getPosition().x + box2.getTexture()->getSize().x >= box1.getPosition().x;
@@ -292,4 +254,4 @@ namespace runner
             box2.getPosition().y + box2.getTexture()->getSize().y >= box1.getPosition().y;
         return collisionX && collisionY;
     }
-} // !runner
+}

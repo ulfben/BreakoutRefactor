@@ -29,21 +29,18 @@ namespace runner {
         enum class TextureName{
             Texture_player, Texture_ball, Texture_brick
         };
-        bool enter();
-        void exit();
+        [[nodiscard]] bool enter();        
         void SetUp();
+        void input() noexcept;
         bool update();
         void render();
         void CollisionCheck();
-        void Restart();    
-        void on_mouse_move(const sf::Vector2f& position);
+        void Restart();            
         void on_key_pressed(const sf::Keyboard::Key key);
-        void on_key_released(const sf::Keyboard::Key key);
-        void on_button_pressed(const sf::Mouse::Button button);
-        void on_button_released(const sf::Mouse::Button button);
+        void on_key_released(const sf::Keyboard::Key key);      
         void loadHighScore();
         void StoreHighScore();
-        std::string intToString(int score);
+        
         bool AxisAlignedBoundingBox(sf::Sprite& box1, sf::Sprite& box2);
             
         sf::RenderWindow m_window;
