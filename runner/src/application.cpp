@@ -57,7 +57,7 @@ namespace runner
         m_player.SetUp(_player, m_minOfScreen, (float) m_window.getSize().x);
         m_ball.SetUp(_ball, m_window.getSize().x, m_window.getSize().y, (int) m_minOfScreen, (int) m_minOfScreen);
         m_brick.SetUp(_brick);
-        m_parallaxBackground.SetUp(_star);
+        m_parallaxBackground = Stars{_star, m_window.getSize().y};
     }
 
     void Application::run(){
@@ -86,7 +86,7 @@ namespace runner
     bool Application::update(){
         m_deltatime = m_clock.restart();
         if(m_state == State::running){
-            m_parallaxBackground.Update(m_deltatime.asSeconds());            
+            m_parallaxBackground.update(m_deltatime.asSeconds());            
             m_player.PlayerUpdate(m_deltatime.asSeconds());
             m_ball.BallUpdate(m_deltatime.asSeconds());
             CollisionCheck();
@@ -99,18 +99,13 @@ namespace runner
         return m_running;
     }
 
-    void Application::render() {        
+    void Application::render() noexcept{        
         m_window.clear(sf::Color{0x44, 0x55, 0x66, 0xff});
         if(m_state == State::pregame){
             m_window.draw(m_startMainuText);
         }
         if(m_state == State::running){
-            for(int i = 0; i < m_parallaxBackground.m_fallingStarYellow.size(); i++){
-                m_window.draw(m_parallaxBackground.m_fallingStarYellow[i].sprite);
-            }
-            for(int i = 0; i < m_parallaxBackground.m_fallingStarRed.size(); i++){
-                m_window.draw(m_parallaxBackground.m_fallingStarRed[i].sprite);
-            }
+            m_parallaxBackground.render(m_window);
             m_window.draw(m_ScoreText);
             m_window.draw(m_player.m_playerSprite);
             m_window.draw(m_ball.m_ballSprite);
@@ -179,7 +174,6 @@ namespace runner
     }
 
     void Application::CollisionCheck(){
-        float r1RightEdge = m_player.m_playerSprite.getPosition().y + m_player.m_playerSprite.getTexture()->getSize().y;
 
         if(AxisAlignedBoundingBox(m_player.m_playerSprite, m_ball.m_ballSprite)){
 
@@ -195,17 +189,7 @@ namespace runner
                 doScore();
             }
         }
-        for(int i = 0; i < m_parallaxBackground.m_fallingStarYellow.size(); i++){
-            if(m_parallaxBackground.m_fallingStarYellow[i].positionY >= m_window.getSize().y){
-                m_parallaxBackground.m_fallingStarYellow[i].positionY = -100;
-            }
-        }
-        for(int i = 0; i < m_parallaxBackground.m_fallingStarRed.size(); i++){
-            if(m_parallaxBackground.m_fallingStarRed[i].positionY >= m_window.getSize().y){
-                m_parallaxBackground.m_fallingStarRed[i].positionY = -100;
-            }
-        }
-        // If the player is out of bounds or edge of the bottom screen that should give trigger fail condition.
+       
         if(m_ball.m_ballSprite.getPosition().y >= m_window.getSize().y){
             m_state = State::lose;
         }

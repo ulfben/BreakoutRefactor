@@ -28,7 +28,7 @@ namespace runner {
         };
         void input() noexcept;
         bool update();
-        void render() ;
+        void render() noexcept; //can't be const due to SFML Window API
         void CollisionCheck();
         void doScore();
         void Restart();
@@ -48,7 +48,7 @@ namespace runner {
         Ball             m_ball;
         Brick            m_brick;        
         State   m_state = State::pregame;
-        parallaxBackground m_parallaxBackground;
+        Stars m_parallaxBackground;
         sf::Font m_font;
         sf::Text m_startMainuText;
         sf::Text m_WinText;
