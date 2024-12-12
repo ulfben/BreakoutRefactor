@@ -7,11 +7,13 @@ static constexpr auto RED_SPEED = 7;
 static constexpr auto RED_SCALE = 0.3f;
 static constexpr auto FALLING_SPEED = 225;
 
-Stars::Stars(const sf::Texture& texture, unsigned stageHeight){    
+Stars::Stars(const sf::Texture& texture, unsigned stageHeight) noexcept{    
     this->stageHeight = stageHeight; 
     float x = 100;
     float y = -100;
-    for(int i = 0; i < YELLOW_STAR_COUNT; i++){ //TODO: 4 yellow, 3 red stars, different speeds for different colors, and randomize x and falling speed!
+    //TODO: 4 yellow, 3 red stars, different speeds for different colors, and randomize x and falling speed!
+    // ensure we can do inline initialization of all stars so the constructor can be removed.
+    for(int i = 0; i < YELLOW_STAR_COUNT; i++){ 
         auto& sprite = stars.emplace_back(texture);
         sprite.setColor(sf::Color::Yellow);
         sprite.setPosition(x, y);        
@@ -39,8 +41,8 @@ void Stars::update(float deltatime) noexcept{
     }            
 }
 
-void Stars::render(sf::RenderWindow& window) noexcept{
-    for(auto& sprite : stars){
+void Stars::render(sf::RenderWindow& window) const noexcept{
+    for(const auto& sprite : stars){
         window.draw(sprite);
     }    
 }
