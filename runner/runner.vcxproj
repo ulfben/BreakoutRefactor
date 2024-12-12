@@ -106,14 +106,14 @@
     <ClCompile Include="src\Ball.cpp" />
     <ClCompile Include="src\Brick.cpp" />
     <ClCompile Include="src\main.cpp" />
-    <ClCompile Include="src\ParallaxBackground.cpp" />
+    <ClCompile Include="src\Stars.cpp" />
     <ClCompile Include="src\PlayerCharacter.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\application.hpp" />
     <ClInclude Include="include\Ball.h" />
     <ClInclude Include="include\Brick.h" />
-    <ClInclude Include="include\ParallaxBackground.h" />
+    <ClInclude Include="include\Stars.h" />
     <ClInclude Include="include\PlayerCharacter.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

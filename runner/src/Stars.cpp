@@ -1,4 +1,4 @@
-#include "ParallaxBackground.h"
+#include "Stars.h"
 static constexpr auto YELLOW_STAR_COUNT = 4;
 static constexpr auto YELLOW_SPEED = 25;
 static constexpr auto YELLOW_SCALE = 0.5f;

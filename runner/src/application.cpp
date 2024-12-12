@@ -57,7 +57,7 @@ namespace runner
         m_player.SetUp(_player, m_minOfScreen, (float) m_window.getSize().x);
         m_ball.SetUp(_ball, m_window.getSize().x, m_window.getSize().y, (int) m_minOfScreen, (int) m_minOfScreen);
         m_brick.SetUp(_brick);
-        m_parallaxBackground = Stars{_star, m_window.getSize().y};
+        stars = Stars{_star, m_window.getSize().y};
     }
 
     void Application::run(){
@@ -86,7 +86,7 @@ namespace runner
     bool Application::update(){
         m_deltatime = m_clock.restart();
         if(m_state == State::running){
-            m_parallaxBackground.update(m_deltatime.asSeconds());            
+            stars.update(m_deltatime.asSeconds());            
             m_player.PlayerUpdate(m_deltatime.asSeconds());
             m_ball.BallUpdate(m_deltatime.asSeconds());
             CollisionCheck();
@@ -105,7 +105,7 @@ namespace runner
             m_window.draw(m_startMainuText);
         }
         if(m_state == State::running){
-            m_parallaxBackground.render(m_window);
+            stars.render(m_window);
             m_window.draw(m_ScoreText);
             m_window.draw(m_player.m_playerSprite);
             m_window.draw(m_ball.m_ballSprite);

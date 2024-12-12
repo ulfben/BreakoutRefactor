@@ -30,7 +30,7 @@
     <ClCompile Include="src\Brick.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\ParallaxBackground.cpp">
+    <ClCompile Include="src\Stars.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -47,7 +47,7 @@
     <ClInclude Include="include\Brick.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\ParallaxBackground.h">
+    <ClInclude Include="include\Stars.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

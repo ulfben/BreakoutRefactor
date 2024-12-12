@@ -1,7 +1,7 @@
 #pragma once
 #include "Ball.h"
 #include "Brick.h"
-#include "ParallaxBackground.h"
+#include "Stars.h"
 #include "PlayerCharacter.h"
 #include "SFML/Graphics/Text.hpp"
 #include <SFML/Graphics/RenderWindow.hpp>
@@ -48,7 +48,7 @@ namespace runner {
         Ball             m_ball;
         Brick            m_brick;        
         State   m_state = State::pregame;
-        Stars m_parallaxBackground;
+        Stars stars;
         sf::Font m_font;
         sf::Text m_startMainuText;
         sf::Text m_WinText;
