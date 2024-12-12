@@ -15,13 +15,13 @@ PlayerCharacter::~PlayerCharacter()
 
 };
 
-void PlayerCharacter::SetUp(sf::Texture* texture, float min, float max)
+void PlayerCharacter::SetUp(const sf::Texture& texture, float min, float max)
 {
 	//Thinking is easier to read if I set variables in a SetUp class
 	minPositionX = min;
 	maxPositionX = max;
 	positionX = 500.0f;
-	m_playerSprite.setTexture(*texture);
+	m_playerSprite.setTexture(texture);
 	m_playerSprite.setPosition(positionX, positionY);
 	m_playerSprite.setScale(1.0f, 0.5f);
 };

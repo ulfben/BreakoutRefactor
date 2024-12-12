@@ -10,9 +10,8 @@ Brick::~Brick()
 
 };
 
-void Brick::SetUp(sf::Texture* texture)
+void Brick::SetUp(const sf::Texture& texture)
 {
-	m_texture = *texture;
 	m_brickObject.push_back({});
 	m_brickObject.push_back({});
 	m_brickObject.push_back({});
@@ -31,7 +30,7 @@ void Brick::SetUp(sf::Texture* texture)
 	for (int i = 0; i < m_brickObject.size(); i++)
 	{
 		
-		m_brickObject[i].sprite.setTexture(m_texture);
+		m_brickObject[i].sprite.setTexture(texture);
 		m_brickObject[i].color = sf::Color::Red;
 		m_brickObject[i].positionX = x;
 		m_brickObject[i].positionY = y;
@@ -67,9 +66,7 @@ void Brick::Restart()
 	float x = 0;
 	float y = 100;
 	for (int i = 0; i < m_brickObject.size(); i++)
-	{
-
-		m_brickObject[i].sprite.setTexture(m_texture);
+	{		
 		m_brickObject[i].color = sf::Color::Red;
 		m_brickObject[i].positionX = x;
 		m_brickObject[i].positionY = y;

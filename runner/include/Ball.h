@@ -1,18 +1,12 @@
 #pragma once
 #include "batch.hpp"
 
-//enum class BallMovementDirection
-//{
-//	//I made this to keep check the ball changing direction.
-//	UP, Down, Left, Right
-//};
-
 class Ball 
 {
 public:
 	Ball();
 	~Ball();
-	void SetUp(sf::Texture* texture, int rectWidth, int rectHeight, int rectLeft, int rectTop);
+	void SetUp(const sf::Texture& texture, int rectWidth, int rectHeight, int rectLeft, int rectTop);
 	void BallUpdate(float deltatime);
 	float Length(const sf::Vector2f& rhs);
 	void WorldConstraining(float posX, float posY);

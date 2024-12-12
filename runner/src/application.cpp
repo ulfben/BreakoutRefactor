@@ -17,12 +17,7 @@
 #include <string>
 #include <stdexcept>
 namespace runner
-{
-    static const char* kPlayerID = "player";
-    static const char* kBallID = "ball";
-    static const char* kBrickID = "brick";
-    static const char* kFallingStarID = "fallingStar";
-
+{  
     Application::Application(){
         const sf::VideoMode mode{1280, 720};
         const sf::Uint32 flags = sf::Style::Titlebar | sf::Style::Close;
@@ -31,28 +26,29 @@ namespace runner
             throw std::runtime_error("Failed to create window");
         }
         m_window.setKeyRepeatEnabled(false);
-        
-        m_AssetsManagement.LoadTexture(kPlayerID, "assets/player.png");
-        m_AssetsManagement.LoadTexture(kBallID, "assets/Ball.png");
-        m_AssetsManagement.LoadTexture(kBrickID, "assets/WhiteHitBrick.png");
-        m_AssetsManagement.LoadTexture(kFallingStarID, "assets/FallingStar.png");
-        m_AssetsManagement.LoadFontFile("assets/sunny-spells-font/SunnyspellsRegular-MV9ze.otf");
 
+        _player.loadFromFile("assets/player.png");//TODO check return values, and make RAII
+        _ball.loadFromFile("assets/Ball.png");
+        _brick.loadFromFile("assets/WhiteHitBrick.png");
+        _star.loadFromFile("assets/FallingStar.png");
+
+        
+        m_AssetsManagement.LoadFontFile("assets/sunny-spells-font/SunnyspellsRegular-MV9ze.otf");
         m_startMainuText = m_AssetsManagement.SetText("Press `space´ to start", 100, sf::Text::Bold, 250, 250);
         m_WinText = m_AssetsManagement.SetText("Winner", 50, sf::Text::Bold, 550, 300);
         m_LoseText = m_AssetsManagement.SetText("Game Over", 50, sf::Text::Bold, 550, 300);
         m_ScoreText = m_AssetsManagement.SetText("Score", 50, sf::Text::Bold, 1100, 5);
         m_highScoreText = m_AssetsManagement.SetText("", 50, sf::Text::Bold, 0, 5);
-                      
+
         loadHighScore();
 
-        m_player.SetUp(m_AssetsManagement.GetTexture(kPlayerID), m_minOfScreen, (float) m_window.getSize().x);
-        m_ball.SetUp(m_AssetsManagement.GetTexture(kBallID), m_window.getSize().x, m_window.getSize().y, (int) m_minOfScreen, (int) m_minOfScreen);
-        m_brick.SetUp(m_AssetsManagement.GetTexture(kBrickID));
-        m_parallaxBackground.SetUp(m_AssetsManagement.GetTexture(kFallingStarID));
+        m_player.SetUp(_player, m_minOfScreen, (float) m_window.getSize().x);
+        m_ball.SetUp(_ball, m_window.getSize().x, m_window.getSize().y, (int) m_minOfScreen, (int) m_minOfScreen);
+        m_brick.SetUp(_brick);
+        m_parallaxBackground.SetUp(_star);
     }
 
-    void Application::run(){        
+    void Application::run(){
         while(m_window.isOpen()){
             input();
             if(!update()){
@@ -77,7 +73,7 @@ namespace runner
 
     bool Application::update(){
         m_deltatime = m_clock.restart();
-        if(m_CurrentGameState == TheGamesStates::running){
+        if(m_state == State::running){
             m_parallaxBackground.Update(m_deltatime.asSeconds());
             m_ScoreText.setString("Score: " + std::to_string(m_currentScore));
             m_player.PlayerUpdate(m_deltatime.asSeconds());
@@ -88,7 +84,7 @@ namespace runner
         }
 
         if(m_brick.m_brickObject.empty()){
-            m_CurrentGameState = TheGamesStates::win;
+            m_state = State::win;
         }
 
         return m_running;
@@ -98,11 +94,11 @@ namespace runner
         m_batch.clear();
         m_window.clear(sf::Color{0x44, 0x55, 0x66, 0xff});
 
-        if(m_CurrentGameState == TheGamesStates::pregame){
+        if(m_state == State::pregame){
             m_window.draw(m_startMainuText);
         }
 
-        if(m_CurrentGameState == TheGamesStates::running){
+        if(m_state == State::running){
             for(int i = 0; i < m_parallaxBackground.m_fallingStarYellow.size(); i++){
                 m_window.draw(m_parallaxBackground.m_fallingStarYellow[i].sprite);
             }
@@ -119,12 +115,12 @@ namespace runner
 
         }
 
-        if(m_CurrentGameState == TheGamesStates::lose){
+        if(m_state == State::lose){
             m_window.draw(m_LoseText);
             StoreHighScore();
         }
 
-        if(m_CurrentGameState == TheGamesStates::win){
+        if(m_state == State::win){
             m_window.draw(m_WinText);
             StoreHighScore();
         }
@@ -134,7 +130,7 @@ namespace runner
         m_batch.present(m_window);
         m_window.display();
     }
-    
+
     void Application::on_key_pressed(const sf::Keyboard::Key key){
         if(key == sf::Keyboard::Key::Escape){
             m_running = false;
@@ -151,15 +147,15 @@ namespace runner
             m_player.pressedRight = false;
         }
 
-        if(m_CurrentGameState == TheGamesStates::pregame){
+        if(m_state == State::pregame){
             if(key == sf::Keyboard::Key::Space){
-                m_CurrentGameState = TheGamesStates::running;
+                m_state = State::running;
             }
         }
 
-        if(m_CurrentGameState == TheGamesStates::lose || m_CurrentGameState == TheGamesStates::win){
+        if(m_state == State::lose || m_state == State::win){
             if(key == sf::Keyboard::Key::Space){
-                m_CurrentGameState = TheGamesStates::running;
+                m_state = State::running;
                 Restart();
             }
         }
@@ -210,7 +206,7 @@ namespace runner
         }
         // If the player is out of bounds or edge of the bottom screen that should give trigger fail condition.
         if(m_ball.m_ballSprite.getPosition().y >= m_window.getSize().y){
-            m_CurrentGameState = TheGamesStates::lose;
+            m_state = State::lose;
         }
     }
 

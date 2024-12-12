@@ -9,9 +9,8 @@ parallaxBackground::~parallaxBackground()
 
 }
 
-void parallaxBackground::SetUp(sf::Texture* texture)
-{
-	m_texture = *texture;
+void parallaxBackground::SetUp(const sf::Texture& texture)
+{	
 	m_fallingStarYellow.push_back({});
 	m_fallingStarYellow.push_back({});
 	m_fallingStarYellow.push_back({});
@@ -23,7 +22,7 @@ void parallaxBackground::SetUp(sf::Texture* texture)
 	float y = -100;
 	for(int i = 0; i < m_fallingStarYellow.size(); i++)
 	{
-		m_fallingStarYellow[i].sprite.setTexture(m_texture);
+		m_fallingStarYellow[i].sprite.setTexture(texture);
 		m_fallingStarYellow[i].color = sf::Color::Yellow;
 		m_fallingStarYellow[i].positionX = x;
 		m_fallingStarYellow[i].positionY = y;
@@ -36,7 +35,7 @@ void parallaxBackground::SetUp(sf::Texture* texture)
 	x = 250;
 	for (int i = 0; i < m_fallingStarRed.size(); i++)
 	{
-		m_fallingStarRed[i].sprite.setTexture(m_texture);
+		m_fallingStarRed[i].sprite.setTexture(texture);
 		m_fallingStarRed[i].color = sf::Color::Red;
 		m_fallingStarRed[i].positionX = x;
 		m_fallingStarRed[i].positionY = y;

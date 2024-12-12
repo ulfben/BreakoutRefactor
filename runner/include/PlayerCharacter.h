@@ -7,7 +7,7 @@ class PlayerCharacter
 public:
 	PlayerCharacter();
 	~PlayerCharacter();
-	void SetUp(sf::Texture* texture, float min, float max);
+	void SetUp(const sf::Texture& texture, float min, float max);
 	void PlayerUpdate(float deltatime);
 	void ProcessingInput(float deltatime);
 	void WorldConstrainingOnPositionX();
