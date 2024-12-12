@@ -1,14 +1,12 @@
 #pragma once
 #include "SFML/Graphics/Sprite.hpp"
-#include "SFML/Graphics/Texture.hpp"
+#include "OwningTexture.hpp"
 #include "SFML/System/Vector2.hpp"
 
 class PlayerCharacter
 {
 public:
-	PlayerCharacter();
-	~PlayerCharacter();
-	void SetUp(const sf::Texture& texture, float max);
+	PlayerCharacter(const OwningTexture& texture, unsigned max);	
 	void PlayerUpdate(float deltatime);
 	void ProcessingInput(float deltatime);
 	void WorldConstrainingOnPositionX();

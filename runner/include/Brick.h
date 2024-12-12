@@ -1,7 +1,7 @@
 #pragma once
 #include <vector>
 #include "SFML/Graphics/Sprite.hpp"
-#include "SFML/Graphics/Texture.hpp"
+#include "OwningTexture.hpp"
 
 struct BrickParts
 {
@@ -10,13 +10,10 @@ struct BrickParts
 	float positionX, positionY;
 };
 
-class Brick
+class Brick final
 {
 public:
-	Brick();
-	~Brick();
-	void SetUp(const sf::Texture& texture);
-	void Update();
+	explicit Brick(const OwningTexture& texture);			
 	void Restart();
 	std::vector<BrickParts> m_brickObject;
 };

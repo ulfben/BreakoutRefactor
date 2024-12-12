@@ -114,6 +114,7 @@
     <ClInclude Include="include\application.hpp" />
     <ClInclude Include="include\Ball.h" />
     <ClInclude Include="include\Brick.h" />
+    <ClInclude Include="include\MyWindow.hpp" />
     <ClInclude Include="include\OwningFont.hpp" />
     <ClInclude Include="include\Stars.h" />
     <ClInclude Include="include\PlayerCharacter.h" />

@@ -7,14 +7,14 @@ static constexpr auto RED_SPEED = 7;
 static constexpr auto RED_SCALE = 0.3f;
 static constexpr auto FALLING_SPEED = 225;
 
-Stars::Stars(const sf::Texture& texture, unsigned stageHeight) noexcept{    
+Stars::Stars(const OwningTexture& texture, unsigned stageHeight) noexcept{    
     this->stageHeight = stageHeight; 
     float x = 100;
     float y = -100;
     //TODO: 4 yellow, 3 red stars, different speeds for different colors, and randomize x and falling speed!
     // ensure we can do inline initialization of all stars so the constructor can be removed.
     for(int i = 0; i < YELLOW_STAR_COUNT; i++){ 
-        auto& sprite = stars.emplace_back(texture);
+        auto& sprite = stars.emplace_back(texture.get());
         sprite.setColor(sf::Color::Yellow);
         sprite.setPosition(x, y);        
         sprite.setScale(YELLOW_SCALE, YELLOW_SCALE);
@@ -22,7 +22,7 @@ Stars::Stars(const sf::Texture& texture, unsigned stageHeight) noexcept{
     }
     y = -150;    
     for(int i = 0; i < RED_STAR_COUNT; i++){
-        auto& sprite = stars.emplace_back(texture);
+        auto& sprite = stars.emplace_back(texture.get());
         sprite.setColor(sf::Color::Red);
         sprite.setPosition(x, y);        
         sprite.setScale(RED_SCALE, RED_SCALE);

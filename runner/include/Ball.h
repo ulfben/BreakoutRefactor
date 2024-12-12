@@ -1,14 +1,12 @@
 #pragma once
 #include "SFML/Graphics/Sprite.hpp"
-#include "SFML/Graphics/Texture.hpp"
 #include "SFML/System/Vector2.hpp"
+#include "OwningTexture.hpp"
 
-class Ball 
+class Ball final
 {
 public:
-	Ball();
-	~Ball();
-	void SetUp(const sf::Texture& texture, int rectWidth, int rectHeight);
+	Ball(const OwningTexture& texture, unsigned rectWidth, unsigned rectHeight);	
 	void BallUpdate(float deltatime);
 	float Length(const sf::Vector2f& rhs);
 	void WorldConstraining(float posX, float posY);

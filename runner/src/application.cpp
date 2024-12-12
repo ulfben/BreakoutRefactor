@@ -19,19 +19,8 @@
 #include <stdexcept>
 namespace runner
 {
-    Application::Application(){
-        const sf::VideoMode mode{1280, 720};
-        const sf::Uint32 flags = sf::Style::Titlebar | sf::Style::Close;
-        window.create(mode, "pineapple", flags);
-        if(!window.isOpen()){
-            throw std::runtime_error("Failed to create window");
-        }
-        window.setKeyRepeatEnabled(false);    
+    Application::Application(){        
         loadHighScore();
-        m_player.SetUp(_player.get(), (float) window.getSize().x);
-        m_ball.SetUp(_ball.get(), window.getSize().x, window.getSize().y);
-        m_brick.SetUp(_brick.get());
-        stars = Stars{_star.get(), window.getSize().y};
     }
 
     void Application::run(){
@@ -74,31 +63,32 @@ namespace runner
     }
 
     void Application::render() noexcept{
-        window.clear(sf::Color{0x44, 0x55, 0x66, 0xff});
+        auto& w = window.get();
+        w.clear(sf::Color{0x44, 0x55, 0x66, 0xff});
         if(m_state == State::pregame){
-            window.draw(startMenuText);
+            w.draw(startMenuText);
         }
         if(m_state == State::running){
-            stars.render(window);
-            window.draw(scoreText);
-            window.draw(m_player.m_playerSprite);
-            window.draw(m_ball.m_ballSprite);
+            stars.render(w);
+            w.draw(scoreText);
+            w.draw(m_player.m_playerSprite);
+            w.draw(m_ball.m_ballSprite);
 
             for(int i = 0; i < m_brick.m_brickObject.size(); i++){
-                window.draw(m_brick.m_brickObject[i].sprite);
+                w.draw(m_brick.m_brickObject[i].sprite);
             }
         }
 
         if(m_state == State::lose){
-            window.draw(loseText);
+            w.draw(loseText);
             StoreHighScore();
         }
         if(m_state == State::win){
-            window.draw(winText);
+            w.draw(winText);
             StoreHighScore();
         }
-        window.draw(highscoreText);
-        window.display();
+        w.draw(highscoreText);
+        w.display();
     }
 
     void Application::on_key_pressed(const sf::Keyboard::Key key){
@@ -159,7 +149,7 @@ namespace runner
                 doScore();
             }
         }
-        if(m_ball.m_ballSprite.getPosition().y >= window.getSize().y){
+        if(m_ball.m_ballSprite.getPosition().y >= static_cast<float>(window.height())){
             m_state = State::lose;
         }
     }

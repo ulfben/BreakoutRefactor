@@ -6,6 +6,7 @@
 #include "PlayerCharacter.h"
 #include "OwningTexture.hpp"
 #include "OwningFont.hpp"
+#include "MyWindow.hpp"
 #include "SFML/Graphics/Text.hpp"
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/Graphics/Sprite.hpp>
@@ -18,7 +19,7 @@
 #include <string>
 
 namespace runner {
-     static inline sf::Text createText(std::string_view s, const OwningFont& font, unsigned size, sf::Uint32 textStyle, float positionX, float positionY){
+    static inline sf::Text createText(std::string_view s, const OwningFont& font, unsigned size, sf::Uint32 textStyle, float positionX, float positionY){
         sf::Text text;
         text.setFont(font.get());
         text.setCharacterSize(size);
@@ -53,26 +54,25 @@ namespace runner {
 
         [[nodiscard]] bool AxisAlignedBoundingBox(sf::Sprite& box1, sf::Sprite& box2);
 
-        sf::RenderWindow window;        
-        bool             m_running = true;
-        int m_highScoreInt = 0;
-        int m_currentScore = 0;        
-        sf::Clock        m_clock;                
-        PlayerCharacter  m_player;
-        Ball             m_ball;
-        Brick            m_brick;        
-        State   m_state = State::pregame;
-        Stars stars;
+        MyWindow window{"Breakout!", {1280, 720}, sf::Style::Titlebar | sf::Style::Close};
         OwningFont m_font{"assets/sunny-spells-font/SunnyspellsRegular-MV9ze.otf"};
         sf::Text startMenuText = createText("Press `space´ to start", m_font, 100u, sf::Text::Bold, 250, 250);
         sf::Text winText = createText("Winner", m_font, 50u, sf::Text::Bold, 550, 300);
         sf::Text loseText = createText("Game Over", m_font, 50u, sf::Text::Bold, 550, 300);
         sf::Text scoreText = createText("Score", m_font, 50u, sf::Text::Bold, 1100, 5);
         sf::Text highscoreText = createText("", m_font, 50u, sf::Text::Bold, 0, 5);
-
-        OwningTexture _player{"assets/player.png"};
-        OwningTexture _ball{"assets/Ball.png"};
-        OwningTexture _brick{"assets/WhiteHitBrick.png"};
-        OwningTexture _star{"assets/FallingStar.png"};
+        OwningTexture playerTex{"assets/player.png"};
+        OwningTexture ballTex{"assets/Ball.png"};
+        OwningTexture brickTex{"assets/WhiteHitBrick.png"};
+        OwningTexture starTex{"assets/FallingStar.png"};
+        Stars            stars{starTex, window.height()};
+        Brick            m_brick{brickTex};
+        PlayerCharacter  m_player{playerTex,  window.width()};
+        Ball             m_ball{ballTex,  window.width(), window.height()};
+        State m_state = State::pregame;
+        sf::Clock        m_clock;
+        bool m_running = true;
+        int m_highScoreInt = 0;
+        int m_currentScore = 0;
     };
 }
