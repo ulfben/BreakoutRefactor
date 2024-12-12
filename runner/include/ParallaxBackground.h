@@ -1,5 +1,6 @@
 #pragma once
-#include "batch.hpp"
+#include "SFML/Graphics/Sprite.hpp"
+#include "SFML/Graphics/Texture.hpp"
 #include <vector>
 
 struct parallaxParts

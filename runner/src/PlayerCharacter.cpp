@@ -21,7 +21,7 @@ void PlayerCharacter::SetUp(const sf::Texture& texture, float min, float max)
 	minPositionX = min;
 	maxPositionX = max;
 	positionX = 500.0f;
-	m_playerSprite.setTexture(texture);
+  m_playerSprite.setTexture(texture);
 	m_playerSprite.setPosition(positionX, positionY);
 	m_playerSprite.setScale(1.0f, 0.5f);
 };

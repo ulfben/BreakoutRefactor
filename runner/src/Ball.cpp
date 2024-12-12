@@ -1,5 +1,5 @@
 #include "Ball.h"
-
+#include <cmath>
 Ball::Ball()
 {
 	hasCollided = false;

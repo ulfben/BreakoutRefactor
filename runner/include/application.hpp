@@ -1,6 +1,5 @@
 #pragma once
 #include "Ball.h"
-#include "batch.hpp"
 #include "Brick.h"
 #include "ParallaxBackground.h"
 #include "PlayerCharacter.h"
@@ -29,7 +28,7 @@ namespace runner {
         };
         void input() noexcept;
         bool update();
-        void render();
+        void render() ;
         void CollisionCheck();
         void doScore();
         void Restart();
@@ -40,8 +39,7 @@ namespace runner {
 
         [[nodiscard]] bool AxisAlignedBoundingBox(sf::Sprite& box1, sf::Sprite& box2);
 
-        sf::RenderWindow m_window;
-        PrimitiveBatch   m_batch;
+        sf::RenderWindow m_window;        
         bool             m_running = true;
         sf::Clock        m_clock;
         sf::Time         m_deltatime;

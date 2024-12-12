@@ -99,8 +99,7 @@ namespace runner
         return m_running;
     }
 
-    void Application::render(){
-        m_batch.clear();
+    void Application::render() {        
         m_window.clear(sf::Color{0x44, 0x55, 0x66, 0xff});
         if(m_state == State::pregame){
             m_window.draw(m_startMainuText);
@@ -129,8 +128,7 @@ namespace runner
             m_window.draw(m_WinText);
             StoreHighScore();
         }
-        m_window.draw(m_highScoreText);
-        m_batch.present(m_window);
+        m_window.draw(m_highScoreText);        
         m_window.display();
     }
 

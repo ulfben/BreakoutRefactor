@@ -1,7 +1,8 @@
 #pragma once
-
-#include "batch.hpp"
 #include <vector>
+#include "SFML/Graphics/Sprite.hpp"
+#include "SFML/Graphics/Texture.hpp"
+
 struct BrickParts
 {
 	sf::Sprite sprite;

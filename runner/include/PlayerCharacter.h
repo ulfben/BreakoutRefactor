@@ -1,6 +1,7 @@
 #pragma once
-
-#include "batch.hpp"
+#include "SFML/Graphics/Sprite.hpp"
+#include "SFML/Graphics/Texture.hpp"
+#include "SFML/System/Vector2.hpp"
 
 class PlayerCharacter
 {
