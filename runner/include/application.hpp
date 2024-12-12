@@ -19,7 +19,7 @@
 namespace runner {
     class Application final{
     public:
-        Application() = default;
+        Application();
         void run();
 
     private:
@@ -28,9 +28,7 @@ namespace runner {
         };
         enum class TextureName{
             Texture_player, Texture_ball, Texture_brick
-        };
-        [[nodiscard]] bool enter();        
-        void SetUp();
+        };        
         void input() noexcept;
         bool update();
         void render();

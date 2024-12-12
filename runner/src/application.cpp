@@ -15,6 +15,7 @@
 #include <SFML/Window/VideoMode.hpp>
 #include <SFML/Window/WindowStyle.hpp>
 #include <string>
+#include <stdexcept>
 namespace runner
 {
     static const char* kPlayerID = "player";
@@ -22,14 +23,36 @@ namespace runner
     static const char* kBrickID = "brick";
     static const char* kFallingStarID = "fallingStar";
 
-    void Application::run(){
+    Application::Application(){
         const sf::VideoMode mode{1280, 720};
         const sf::Uint32 flags = sf::Style::Titlebar | sf::Style::Close;
         m_window.create(mode, "pineapple", flags);
-        if(!m_window.isOpen() || !enter()){
-            return;
+        if(!m_window.isOpen()){
+            throw std::runtime_error("Failed to create window");
         }
         m_window.setKeyRepeatEnabled(false);
+        
+        m_AssetsManagement.LoadTexture(kPlayerID, "assets/player.png");
+        m_AssetsManagement.LoadTexture(kBallID, "assets/Ball.png");
+        m_AssetsManagement.LoadTexture(kBrickID, "assets/WhiteHitBrick.png");
+        m_AssetsManagement.LoadTexture(kFallingStarID, "assets/FallingStar.png");
+        m_AssetsManagement.LoadFontFile("assets/sunny-spells-font/SunnyspellsRegular-MV9ze.otf");
+
+        m_startMainuText = m_AssetsManagement.SetText("Press `space´ to start", 100, sf::Text::Bold, 250, 250);
+        m_WinText = m_AssetsManagement.SetText("Winner", 50, sf::Text::Bold, 550, 300);
+        m_LoseText = m_AssetsManagement.SetText("Game Over", 50, sf::Text::Bold, 550, 300);
+        m_ScoreText = m_AssetsManagement.SetText("Score", 50, sf::Text::Bold, 1100, 5);
+        m_highScoreText = m_AssetsManagement.SetText("", 50, sf::Text::Bold, 0, 5);
+                      
+        loadHighScore();
+
+        m_player.SetUp(m_AssetsManagement.GetTexture(kPlayerID), m_minOfScreen, (float) m_window.getSize().x);
+        m_ball.SetUp(m_AssetsManagement.GetTexture(kBallID), m_window.getSize().x, m_window.getSize().y, (int) m_minOfScreen, (int) m_minOfScreen);
+        m_brick.SetUp(m_AssetsManagement.GetTexture(kBrickID));
+        m_parallaxBackground.SetUp(m_AssetsManagement.GetTexture(kFallingStarID));
+    }
+
+    void Application::run(){        
         while(m_window.isOpen()){
             input();
             if(!update()){
@@ -50,38 +73,6 @@ namespace runner
                 m_window.close();
             }
         }
-    }
-
-    bool Application::enter(){
-        SetUp();
-        return true;
-    }
-
-    void Application::SetUp(){
-        m_CurrentGameState = TheGamesStates::pregame;
-
-        m_AssetsManagement.LoadTexture(kPlayerID, "assets/player.png");
-        m_AssetsManagement.LoadTexture(kBallID, "assets/Ball.png");
-        m_AssetsManagement.LoadTexture(kBrickID, "assets/WhiteHitBrick.png");
-        m_AssetsManagement.LoadTexture(kFallingStarID, "assets/FallingStar.png");
-        m_AssetsManagement.LoadFontFile("assets/sunny-spells-font/SunnyspellsRegular-MV9ze.otf");
-
-        m_startMainuText = m_AssetsManagement.SetText("Press `space´ to start", 100, sf::Text::Bold, 250, 250);
-        m_WinText = m_AssetsManagement.SetText("Winner", 50, sf::Text::Bold, 550, 300);
-        m_LoseText = m_AssetsManagement.SetText("Game Over", 50, sf::Text::Bold, 550, 300);
-        m_ScoreText = m_AssetsManagement.SetText("Score", 50, sf::Text::Bold, 1100, 5);
-        m_highScoreText = m_AssetsManagement.SetText("", 50, sf::Text::Bold, 0, 5);
-
-
-        m_currentScore = 0;
-        m_highScoreInt = 0;
-        m_minOfScreen = 0.0f;
-        loadHighScore();
-
-        m_player.SetUp(m_AssetsManagement.GetTexture(kPlayerID), m_minOfScreen, (float) m_window.getSize().x);
-        m_ball.SetUp(m_AssetsManagement.GetTexture(kBallID), m_window.getSize().x, m_window.getSize().y, (int) m_minOfScreen, (int) m_minOfScreen);
-        m_brick.SetUp(m_AssetsManagement.GetTexture(kBrickID));
-        m_parallaxBackground.SetUp(m_AssetsManagement.GetTexture(kFallingStarID));
     }
 
     bool Application::update(){
