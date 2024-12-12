@@ -17,7 +17,18 @@
 #include <string>
 #include <stdexcept>
 namespace runner
-{  
+{
+
+    sf::Text createText(std::string_view s, const sf::Font& font, unsigned size, sf::Uint32 textStyle, float positionX, float positionY){
+        sf::Text text;
+        text.setFont(font);
+        text.setCharacterSize(size);
+        text.setStyle(textStyle);
+        text.setPosition(positionX, positionY);
+        text.setString(s.data());
+        return text;
+    }
+
     Application::Application(){
         const sf::VideoMode mode{1280, 720};
         const sf::Uint32 flags = sf::Style::Titlebar | sf::Style::Close;
@@ -26,19 +37,20 @@ namespace runner
             throw std::runtime_error("Failed to create window");
         }
         m_window.setKeyRepeatEnabled(false);
+        if(!m_font.loadFromFile("assets/sunny-spells-font/SunnyspellsRegular-MV9ze.otf")){
+            throw std::runtime_error("Failed to load font!");
+        }
 
         _player.loadFromFile("assets/player.png");//TODO check return values, and make RAII
         _ball.loadFromFile("assets/Ball.png");
         _brick.loadFromFile("assets/WhiteHitBrick.png");
         _star.loadFromFile("assets/FallingStar.png");
 
-        
-        m_AssetsManagement.LoadFontFile("assets/sunny-spells-font/SunnyspellsRegular-MV9ze.otf");
-        m_startMainuText = m_AssetsManagement.SetText("Press `space´ to start", 100, sf::Text::Bold, 250, 250);
-        m_WinText = m_AssetsManagement.SetText("Winner", 50, sf::Text::Bold, 550, 300);
-        m_LoseText = m_AssetsManagement.SetText("Game Over", 50, sf::Text::Bold, 550, 300);
-        m_ScoreText = m_AssetsManagement.SetText("Score", 50, sf::Text::Bold, 1100, 5);
-        m_highScoreText = m_AssetsManagement.SetText("", 50, sf::Text::Bold, 0, 5);
+        m_startMainuText = createText("Press `space´ to start", m_font, 100u, sf::Text::Bold, 250, 250);
+        m_WinText = createText("Winner", m_font, 50u, sf::Text::Bold, 550, 300);
+        m_LoseText = createText("Game Over", m_font, 50u, sf::Text::Bold, 550, 300);
+        m_ScoreText = createText("Score", m_font, 50u, sf::Text::Bold, 1100, 5);
+        m_highScoreText = createText("", m_font, 50u, sf::Text::Bold, 0, 5);
 
         loadHighScore();
 

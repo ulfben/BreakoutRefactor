@@ -1,6 +1,4 @@
 #pragma once
-
-#include "AssetsManagment.h"
 #include "Ball.h"
 #include "batch.hpp"
 #include "Brick.h"
@@ -49,10 +47,10 @@ namespace runner {
         sf::Sprite       m_sprite;
         PlayerCharacter  m_player;
         Ball             m_ball;
-        Brick            m_brick;
-        AssetsManagement m_AssetsManagement;
+        Brick            m_brick;        
         State   m_state = State::pregame;
         parallaxBackground m_parallaxBackground;
+        sf::Font m_font;
         sf::Text m_startMainuText;
         sf::Text m_WinText;
         sf::Text m_LoseText;
