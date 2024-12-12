@@ -19,53 +19,26 @@
 #include <stdexcept>
 namespace runner
 {
-
-    sf::Text createText(std::string_view s, const sf::Font& font, unsigned size, sf::Uint32 textStyle, float positionX, float positionY){
-        sf::Text text;
-        text.setFont(font);
-        text.setCharacterSize(size);
-        text.setStyle(textStyle);
-        text.setPosition(positionX, positionY);
-        text.setString(s.data());
-        return text;
-    }
-
     Application::Application(){
         const sf::VideoMode mode{1280, 720};
         const sf::Uint32 flags = sf::Style::Titlebar | sf::Style::Close;
-        m_window.create(mode, "pineapple", flags);
-        if(!m_window.isOpen()){
+        window.create(mode, "pineapple", flags);
+        if(!window.isOpen()){
             throw std::runtime_error("Failed to create window");
         }
-        m_window.setKeyRepeatEnabled(false);
-        if(!m_font.loadFromFile("assets/sunny-spells-font/SunnyspellsRegular-MV9ze.otf")){
-            throw std::runtime_error("Failed to load font!");
-        }
-
-        _player.loadFromFile("assets/player.png");//TODO check return values, and make RAII
-        _ball.loadFromFile("assets/Ball.png");
-        _brick.loadFromFile("assets/WhiteHitBrick.png");
-        _star.loadFromFile("assets/FallingStar.png");
-
-        m_startMainuText = createText("Press `space´ to start", m_font, 100u, sf::Text::Bold, 250, 250);
-        m_WinText = createText("Winner", m_font, 50u, sf::Text::Bold, 550, 300);
-        m_LoseText = createText("Game Over", m_font, 50u, sf::Text::Bold, 550, 300);
-        m_ScoreText = createText("Score", m_font, 50u, sf::Text::Bold, 1100, 5);
-        m_highScoreText = createText("", m_font, 50u, sf::Text::Bold, 0, 5);
-
+        window.setKeyRepeatEnabled(false);    
         loadHighScore();
-
-        m_player.SetUp(_player, m_minOfScreen, (float) m_window.getSize().x);
-        m_ball.SetUp(_ball, m_window.getSize().x, m_window.getSize().y, (int) m_minOfScreen, (int) m_minOfScreen);
-        m_brick.SetUp(_brick);
-        stars = Stars{_star, m_window.getSize().y};
+        m_player.SetUp(_player.get(), (float) window.getSize().x);
+        m_ball.SetUp(_ball.get(), window.getSize().x, window.getSize().y);
+        m_brick.SetUp(_brick.get());
+        stars = Stars{_star.get(), window.getSize().y};
     }
 
     void Application::run(){
-        while(m_window.isOpen()){
+        while(window.isOpen()){
             input();
             if(!update()){
-                m_window.close();
+                window.close();
             }
             render();
         }
@@ -73,26 +46,26 @@ namespace runner
 
     void Application::input() noexcept{
         sf::Event event;
-        while(m_window.pollEvent(event)){
+        while(window.pollEvent(event)){
             if(event.type == sf::Event::KeyPressed){
                 on_key_pressed(event.key.code);
             } else if(event.type == sf::Event::KeyReleased){
                 on_key_released(event.key.code);
             } else if(event.type == sf::Event::Closed){
-                m_window.close();
+                window.close();
             }
         }
     }
 
     bool Application::update(){
-        m_deltatime = m_clock.restart();
+        auto m_deltatime = m_clock.restart();
         if(m_state == State::running){
-            stars.update(m_deltatime.asSeconds());            
+            stars.update(m_deltatime.asSeconds());
             m_player.PlayerUpdate(m_deltatime.asSeconds());
             m_ball.BallUpdate(m_deltatime.asSeconds());
             CollisionCheck();
         } else{
-            m_highScoreText.setString(std::format("HighScore: {}", m_highScoreInt));
+            highscoreText.setString(std::format("HighScore: {}", m_highScoreInt));
         }
         if(m_brick.m_brickObject.empty()){
             m_state = State::win;
@@ -100,32 +73,32 @@ namespace runner
         return m_running;
     }
 
-    void Application::render() noexcept{        
-        m_window.clear(sf::Color{0x44, 0x55, 0x66, 0xff});
+    void Application::render() noexcept{
+        window.clear(sf::Color{0x44, 0x55, 0x66, 0xff});
         if(m_state == State::pregame){
-            m_window.draw(m_startMainuText);
+            window.draw(startMenuText);
         }
         if(m_state == State::running){
-            stars.render(m_window);
-            m_window.draw(m_ScoreText);
-            m_window.draw(m_player.m_playerSprite);
-            m_window.draw(m_ball.m_ballSprite);
+            stars.render(window);
+            window.draw(scoreText);
+            window.draw(m_player.m_playerSprite);
+            window.draw(m_ball.m_ballSprite);
 
             for(int i = 0; i < m_brick.m_brickObject.size(); i++){
-                m_window.draw(m_brick.m_brickObject[i].sprite);
+                window.draw(m_brick.m_brickObject[i].sprite);
             }
         }
 
         if(m_state == State::lose){
-            m_window.draw(m_LoseText);
+            window.draw(loseText);
             StoreHighScore();
         }
         if(m_state == State::win){
-            m_window.draw(m_WinText);
+            window.draw(winText);
             StoreHighScore();
         }
-        m_window.draw(m_highScoreText);        
-        m_window.display();
+        window.draw(highscoreText);
+        window.display();
     }
 
     void Application::on_key_pressed(const sf::Keyboard::Key key){
@@ -175,8 +148,7 @@ namespace runner
     }
 
     void Application::CollisionCheck(){
-        if(AxisAlignedBoundingBox(m_player.m_playerSprite, m_ball.m_ballSprite)){
-            m_ball.hasCollided = true;
+        if(AxisAlignedBoundingBox(m_player.m_playerSprite, m_ball.m_ballSprite)){            
             m_ball.m_direction.y = -m_ball.m_direction.y;
         }
         for(int i = 0; i < m_brick.m_brickObject.size(); i++){
@@ -186,15 +158,15 @@ namespace runner
                 m_brick.m_brickObject.erase(m_brick.m_brickObject.begin() + i);
                 doScore();
             }
-        }       
-        if(m_ball.m_ballSprite.getPosition().y >= m_window.getSize().y){
+        }
+        if(m_ball.m_ballSprite.getPosition().y >= window.getSize().y){
             m_state = State::lose;
         }
     }
 
     void Application::doScore(){
         m_currentScore++;
-        m_ScoreText.setString(std::format("Score: {}", m_currentScore));
+        scoreText.setString(std::format("Score: {}", m_currentScore));
     }
 
     void Application::loadHighScore(){

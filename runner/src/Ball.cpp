@@ -1,8 +1,7 @@
 #include "Ball.h"
 #include <cmath>
 Ball::Ball()
-{
-	hasCollided = false;
+{	
 	m_speed = 200.0f;
 	positionX = 500.0f;
 	positionY = 400.0f;
@@ -15,15 +14,15 @@ Ball::~Ball()
 
 };
 
-void Ball::SetUp(const sf::Texture& texture, int rectWidth, int rectHeight, int rectLeft, int rectTop)
+void Ball::SetUp(const sf::Texture& texture, int rectWidth, int rectHeight)
 {
 	m_ballSprite.setTexture(texture);
 	m_ballSprite.setPosition(positionX, positionY);
 	m_ballSprite.setScale(1.0f, 1.0f);
 	worldBounds.width = rectWidth;
 	worldBounds.height = rectHeight;
-	worldBounds.left = rectLeft;
-	worldBounds.top = rectTop;
+	worldBounds.left = 0;
+	worldBounds.top = 0;
 };
 
 void Ball::BallUpdate(float deltatime)
