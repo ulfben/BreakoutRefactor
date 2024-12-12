@@ -1,5 +1,3 @@
-// application.cpp
-
 #include "application.hpp"
 #include <iosfwd>
 #include <iostream>
