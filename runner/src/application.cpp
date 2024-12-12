@@ -4,6 +4,7 @@
 #include <iosfwd>
 #include <iostream>
 #include <fstream>
+#include <format>
 #include <SFML/Config.hpp>
 #include <SFML/Graphics/Color.hpp>
 #include <SFML/Graphics/Sprite.hpp>
@@ -91,7 +92,7 @@ namespace runner
             m_ball.BallUpdate(m_deltatime.asSeconds());
             CollisionCheck();
         } else{
-            m_highScoreText.setString("HighScore: " + std::to_string(m_highScoreInt));
+            m_highScoreText.setString(std::format("HighScore: {}", m_highScoreInt));
         }
         if(m_brick.m_brickObject.empty()){
             m_state = State::win;
@@ -174,13 +175,10 @@ namespace runner
     }
 
     void Application::CollisionCheck(){
-
         if(AxisAlignedBoundingBox(m_player.m_playerSprite, m_ball.m_ballSprite)){
-
             m_ball.hasCollided = true;
             m_ball.m_direction.y = -m_ball.m_direction.y;
         }
-
         for(int i = 0; i < m_brick.m_brickObject.size(); i++){
             if(AxisAlignedBoundingBox(m_brick.m_brickObject[i].sprite, m_ball.m_ballSprite)){
                 m_ball.m_direction.y = -m_ball.m_direction.y;
@@ -188,8 +186,7 @@ namespace runner
                 m_brick.m_brickObject.erase(m_brick.m_brickObject.begin() + i);
                 doScore();
             }
-        }
-       
+        }       
         if(m_ball.m_ballSprite.getPosition().y >= m_window.getSize().y){
             m_state = State::lose;
         }
@@ -197,8 +194,7 @@ namespace runner
 
     void Application::doScore(){
         m_currentScore++;
-        m_ScoreText.setString("Score: " + std::to_string(m_currentScore));
-
+        m_ScoreText.setString(std::format("Score: {}", m_currentScore));
     }
 
     void Application::loadHighScore(){
