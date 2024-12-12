@@ -31,6 +31,7 @@ namespace runner {
         bool update();
         void render();
         void CollisionCheck();
+        void doScore();
         void Restart();
         void on_key_pressed(const sf::Keyboard::Key key);
         void on_key_released(const sf::Keyboard::Key key);

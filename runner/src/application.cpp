@@ -86,30 +86,25 @@ namespace runner
     bool Application::update(){
         m_deltatime = m_clock.restart();
         if(m_state == State::running){
-            m_parallaxBackground.Update(m_deltatime.asSeconds());
-            m_ScoreText.setString("Score: " + std::to_string(m_currentScore));
+            m_parallaxBackground.Update(m_deltatime.asSeconds());            
             m_player.PlayerUpdate(m_deltatime.asSeconds());
             m_ball.BallUpdate(m_deltatime.asSeconds());
             CollisionCheck();
         } else{
             m_highScoreText.setString("HighScore: " + std::to_string(m_highScoreInt));
         }
-
         if(m_brick.m_brickObject.empty()){
             m_state = State::win;
         }
-
         return m_running;
     }
 
     void Application::render(){
         m_batch.clear();
         m_window.clear(sf::Color{0x44, 0x55, 0x66, 0xff});
-
         if(m_state == State::pregame){
             m_window.draw(m_startMainuText);
         }
-
         if(m_state == State::running){
             for(int i = 0; i < m_parallaxBackground.m_fallingStarYellow.size(); i++){
                 m_window.draw(m_parallaxBackground.m_fallingStarYellow[i].sprite);
@@ -124,21 +119,17 @@ namespace runner
             for(int i = 0; i < m_brick.m_brickObject.size(); i++){
                 m_window.draw(m_brick.m_brickObject[i].sprite);
             }
-
         }
 
         if(m_state == State::lose){
             m_window.draw(m_LoseText);
             StoreHighScore();
         }
-
         if(m_state == State::win){
             m_window.draw(m_WinText);
             StoreHighScore();
         }
-
         m_window.draw(m_highScoreText);
-
         m_batch.present(m_window);
         m_window.display();
     }
@@ -203,7 +194,7 @@ namespace runner
                 m_ball.m_direction.y = -m_ball.m_direction.y;
                 m_ball.m_speed += 10.0f;
                 m_brick.m_brickObject.erase(m_brick.m_brickObject.begin() + i);
-                m_currentScore++;
+                doScore();
             }
         }
         for(int i = 0; i < m_parallaxBackground.m_fallingStarYellow.size(); i++){
@@ -220,6 +211,12 @@ namespace runner
         if(m_ball.m_ballSprite.getPosition().y >= m_window.getSize().y){
             m_state = State::lose;
         }
+    }
+
+    void Application::doScore(){
+        m_currentScore++;
+        m_ScoreText.setString("Score: " + std::to_string(m_currentScore));
+
     }
 
     void Application::loadHighScore(){
