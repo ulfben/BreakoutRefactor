@@ -1,6 +1,6 @@
 #pragma once
 #include "Ball.h"
-#include "Brick.h"
+#include "Wall.h"
 #include "Stars.h"
 #include <string_view>
 #include "PlayerCharacter.h"
@@ -50,7 +50,7 @@ namespace runner {
         void on_key_pressed(const sf::Keyboard::Key key);
         void on_key_released(const sf::Keyboard::Key key);
         void loadHighScore();
-        void StoreHighScore();
+        void saveHighscore();
 
         [[nodiscard]] bool AxisAlignedBoundingBox(sf::Sprite& box1, sf::Sprite& box2);
 
@@ -66,7 +66,7 @@ namespace runner {
         OwningTexture brickTex{"assets/WhiteHitBrick.png"};
         OwningTexture starTex{"assets/FallingStar.png"};
         Stars            stars{starTex, window.height()};
-        Brick            m_brick{brickTex};
+        Wall             wall{brickTex};
         PlayerCharacter  m_player{playerTex,  window.width()};
         Ball             m_ball{ballTex,  window.width(), window.height()};
         State m_state = State::pregame;

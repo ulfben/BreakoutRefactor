@@ -15,9 +15,10 @@
 #include <SFML/Window/WindowStyle.hpp>
 #include <string>
 #include <stdexcept>
+
 namespace runner
 {
-    Application::Application(){        
+    Application::Application(){
         loadHighScore();
     }
 
@@ -54,7 +55,7 @@ namespace runner
         } else{
             highscoreText.setString(std::format("HighScore: {}", m_highScoreInt));
         }
-        if(m_brick.m_brickObject.empty()){
+        if(wall.empty()){
             m_state = State::win;
         }
         return m_running;
@@ -71,19 +72,16 @@ namespace runner
             w.draw(scoreText);
             w.draw(m_player.m_playerSprite);
             w.draw(m_ball.m_ballSprite);
-
-            for(int i = 0; i < m_brick.m_brickObject.size(); i++){
-                w.draw(m_brick.m_brickObject[i].sprite);
-            }
+            wall.render(w);
         }
 
         if(m_state == State::lose){
             w.draw(loseText);
-            StoreHighScore();
+            saveHighscore();
         }
         if(m_state == State::win){
             w.draw(winText);
-            StoreHighScore();
+            saveHighscore();
         }
         w.draw(highscoreText);
         w.display();
@@ -93,24 +91,14 @@ namespace runner
         if(key == sf::Keyboard::Key::Escape){
             m_running = false;
         }
-        if(key == sf::Keyboard::Key::Left){
-            m_player.pressedLeft = true;
-        } else{
-            m_player.pressedLeft = false;
-        }
-
-        if(key == sf::Keyboard::Right){
-            m_player.pressedRight = true;
-        } else{
-            m_player.pressedRight = false;
-        }
+        m_player.pressedLeft = (key == sf::Keyboard::Key::Left);
+        m_player.pressedRight = (key == sf::Keyboard::Right);
 
         if(m_state == State::pregame){
             if(key == sf::Keyboard::Key::Space){
                 m_state = State::running;
             }
         }
-
         if(m_state == State::lose || m_state == State::win){
             if(key == sf::Keyboard::Key::Space){
                 m_state = State::running;
@@ -132,19 +120,20 @@ namespace runner
         m_currentScore = 0;
         m_ball.Restart();
         m_player.Restart();
-        m_brick.Restart();
+        wall = Wall(brickTex);
     }
 
     void Application::CollisionCheck(){
-        if(AxisAlignedBoundingBox(m_player.m_playerSprite, m_ball.m_ballSprite)){            
+        if(AxisAlignedBoundingBox(m_player.m_playerSprite, m_ball.m_ballSprite)){
             m_ball.m_direction.y = -m_ball.m_direction.y;
         }
-        for(int i = 0; i < m_brick.m_brickObject.size(); i++){
-            if(AxisAlignedBoundingBox(m_brick.m_brickObject[i].sprite, m_ball.m_ballSprite)){
+        for(auto& brick : wall){
+            if(AxisAlignedBoundingBox(brick, m_ball.m_ballSprite)){
                 m_ball.m_direction.y = -m_ball.m_direction.y;
                 m_ball.m_speed += 10.0f;
-                m_brick.m_brickObject.erase(m_brick.m_brickObject.begin() + i);
+                wall.erase(brick); //TODO: this is incredibly dumb to do during iteration
                 doScore();
+                break;
             }
         }
         if(m_ball.m_ballSprite.getPosition().y >= static_cast<float>(window.height())){
@@ -169,7 +158,7 @@ namespace runner
         readFile.close();
     };
 
-    void Application::StoreHighScore(){
+    void Application::saveHighscore(){
         std::ofstream writeFile("assets/HighScore.txt");
         if(writeFile.is_open()){
             if(m_currentScore > m_highScoreInt){

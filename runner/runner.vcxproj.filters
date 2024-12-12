@@ -27,9 +27,6 @@
     <ClCompile Include="src\Ball.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Brick.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\Stars.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -47,7 +44,7 @@
     <ClInclude Include="include\Ball.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\Brick.h">
+    <ClInclude Include="include\Wall.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\Stars.h">

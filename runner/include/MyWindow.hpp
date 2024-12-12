@@ -6,13 +6,13 @@
 class MyWindow final{
     sf::RenderWindow w;
 
-public: 
-    explicit MyWindow(std::string_view title, sf::VideoMode resolution, sf::Uint32 flags){        
+public:
+    explicit MyWindow(std::string_view title, sf::VideoMode resolution, sf::Uint32 flags){
         w.create(resolution, title.data(), flags);
         if(!w.isOpen()){
             throw std::runtime_error("Failed to create window");
         }
-        w.setKeyRepeatEnabled(false);           
+        w.setKeyRepeatEnabled(false);
     }
     auto& get() noexcept{
         return w;
@@ -34,4 +34,3 @@ public:
     }
 };
 
-        
