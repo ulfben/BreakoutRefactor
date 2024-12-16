@@ -9,15 +9,15 @@
 class Wall final{
     static constexpr auto BRICK_COUNT = 13;
     static constexpr auto BRICK_WIDTH = 100;
+    static constexpr auto WALL_START_Y = 100.0f; 
     std::vector<sf::Sprite> bricks;
     using Iterator = std::vector<sf::Sprite>::iterator;
 public:
     explicit Wall(const OwningTexture& texture){
         float x = 0;
-        float y = 100;
         for(int i = 0; i < BRICK_COUNT; i++){
             auto& sprite = bricks.emplace_back(texture.get());
-            sprite.setPosition(x, y);
+            sprite.setPosition(x, WALL_START_Y);
             sprite.setColor(sf::Color::Red);
             x += BRICK_WIDTH;
         }
@@ -30,15 +30,15 @@ public:
         const auto [minX, maxX] = std::ranges::minmax_element(bricks,
             [](const auto& a, const auto& b){
                 return a.getGlobalBounds().left < b.getGlobalBounds().left;
-            });        
+            });
         const auto [minY, maxY] = std::ranges::minmax_element(bricks,
             [](const auto& a, const auto& b){
                 return a.getGlobalBounds().top < b.getGlobalBounds().top;
-            });        
-        const auto& minXBounds = minX->getGlobalBounds();               
+            });
+        const auto& minXBounds = minX->getGlobalBounds();
         const auto& maxXBounds = maxX->getGlobalBounds();
         const auto& minYBounds = minY->getGlobalBounds();
-        const auto& maxYBounds = maxY->getGlobalBounds();                
+        const auto& maxYBounds = maxY->getGlobalBounds();
         return sf::FloatRect(
             minXBounds.left,
             minYBounds.top,

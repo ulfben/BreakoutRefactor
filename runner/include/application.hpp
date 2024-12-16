@@ -49,7 +49,6 @@ namespace runner {
         void restart() noexcept ;        
         void on_key_released(const sf::Keyboard::Key key) noexcept;
         
-
         Highscore highscore{"assets/HighScore.txt"};
         MyWindow window{"Breakout!", {1280, 720}, sf::Style::Titlebar | sf::Style::Close};
         OwningFont m_font{"assets/sunny-spells-font/SunnyspellsRegular-MV9ze.otf"};
