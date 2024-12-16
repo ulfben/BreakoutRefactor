@@ -124,13 +124,13 @@ namespace runner
     }
 
     void Application::CollisionCheck(){
-        if(AxisAlignedBoundingBox(m_player.m_playerSprite, m_ball.m_ballSprite)){
+        if(is_colliding(m_player.m_playerSprite, m_ball.m_ballSprite)){
             m_ball.m_direction.y = -m_ball.m_direction.y;
         }
         for(auto& brick : wall){
-            if(AxisAlignedBoundingBox(brick, m_ball.m_ballSprite)){
+            if(is_colliding(brick, m_ball.m_ballSprite)){
                 m_ball.m_direction.y = -m_ball.m_direction.y;
-                m_ball.m_speed += 10.0f;
+                m_ball.m_speed += 100.0f;
                 wall.erase(brick); //TODO: this is incredibly dumb to do during iteration
                 doScore();
                 break;
@@ -169,12 +169,7 @@ namespace runner
         writeFile.close();
     }
 
-    bool Application::AxisAlignedBoundingBox(sf::Sprite& box1, sf::Sprite& box2){
-        bool collisionX = box1.getPosition().x + box1.getTexture()->getSize().x >= box2.getPosition().x &&
-            box2.getPosition().x + box2.getTexture()->getSize().x >= box1.getPosition().x;
-
-        bool collisionY = box1.getPosition().y + box1.getTexture()->getSize().y >= box2.getPosition().y &&
-            box2.getPosition().y + box2.getTexture()->getSize().y >= box1.getPosition().y;
-        return collisionX && collisionY;
+    bool Application::is_colliding(const sf::Sprite& box1, const sf::Sprite& box2) const noexcept{
+        return box1.getGlobalBounds().intersects(box2.getGlobalBounds());
     }
 }

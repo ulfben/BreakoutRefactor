@@ -52,7 +52,7 @@ namespace runner {
         void loadHighScore();
         void saveHighscore();
 
-        [[nodiscard]] bool AxisAlignedBoundingBox(sf::Sprite& box1, sf::Sprite& box2);
+        [[nodiscard]] bool is_colliding(const sf::Sprite& box1, const sf::Sprite& box2) const noexcept;
 
         MyWindow window{"Breakout!", {1280, 720}, sf::Style::Titlebar | sf::Style::Close};
         OwningFont m_font{"assets/sunny-spells-font/SunnyspellsRegular-MV9ze.otf"};

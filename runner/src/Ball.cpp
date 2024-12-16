@@ -1,7 +1,7 @@
 #include "Ball.h"
 #include <cmath>
 Ball::Ball(const OwningTexture& texture, unsigned rectWidth, unsigned rectHeight){
-    m_speed = 200.0f;
+    m_speed = 400.0f;
     positionX = 500.0f;
     positionY = 400.0f;
     m_direction.x = positionX;
@@ -52,7 +52,7 @@ void Ball::WorldConstraining(float posX, float posY){
 }
 
 void Ball::Restart(){
-    m_speed = 200.0f;
+    m_speed = 400.0f;
     positionX = 500.0f;
     positionY = 400.0f;
     m_direction.x = positionX;
