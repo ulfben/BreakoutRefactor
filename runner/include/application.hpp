@@ -1,9 +1,10 @@
 #pragma once
+#include "Configs.hpp"
 #include "Ball.h"
 #include "Wall.h"
 #include "Stars.h"
 #include <string_view>
-#include "PlayerCharacter.h"
+#include "Paddle.h"
 #include "OwningTexture.hpp"
 #include "OwningFont.hpp"
 #include "MyWindow.hpp"
@@ -45,19 +46,13 @@ namespace runner {
         void input() noexcept;
         bool update();
         void render() noexcept; //can't be const due to SFML Window API
-        void CollisionCheck();
+        void checkCollisions();
         void doScore();
-        void Restart();
+        void restart();
         void on_key_pressed(const sf::Keyboard::Key key);
         void on_key_released(const sf::Keyboard::Key key);
         void loadHighScore();
         void saveHighscore();
-
-        [[nodiscard]] bool is_colliding(const sf::Sprite& box1, const sf::Sprite& box2) const noexcept;
-        [[nodiscard]] std::optional<sf::FloatRect> get_overlap(const sf::Sprite& box1, const sf::Sprite& box2) const noexcept;
-        void handlePaddleBallCollision(const sf::Sprite& paddle, sf::Sprite& ball, sf::Vector2f& ballVelocity) const noexcept;
-        void handleBounds(Ball& ball, const sf::FloatRect bounds) const noexcept;
-        bool isBehindPlayer(const Ball& ball) const noexcept;
 
         MyWindow window{"Breakout!", {1280, 720}, sf::Style::Titlebar | sf::Style::Close};
         OwningFont m_font{"assets/sunny-spells-font/SunnyspellsRegular-MV9ze.otf"};
@@ -72,7 +67,7 @@ namespace runner {
         OwningTexture starTex{"assets/FallingStar.png"};
         Stars            stars{starTex, window.height()};
         Wall             wall{brickTex};
-        PlayerCharacter  m_player{playerTex,  window.width()};
+        Paddle  m_player{playerTex};
         Ball             m_ball{ballTex};
         State m_state = State::pregame;
         sf::Clock        m_clock;

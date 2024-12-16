@@ -21,12 +21,6 @@
     <ClCompile Include="src\application.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\PlayerCharacter.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Stars.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="include\OwningTexture.hpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -35,7 +29,7 @@
     <ClInclude Include="include\application.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\PlayerCharacter.h">
+    <ClInclude Include="include\Paddle.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\Ball.h">
@@ -51,6 +45,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\MyWindow.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Configs.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

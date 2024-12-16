@@ -2,6 +2,7 @@
 #include <stdexcept>
 #include <string_view>
 #include <format>
+#include <span>
 #include <SFML/Graphics/RenderWindow.hpp>
 class MyWindow final{
     sf::RenderWindow w;
@@ -16,6 +17,15 @@ public:
     }
     auto& get() noexcept{
         return w;
+    }
+    void draw(const sf::Drawable& o) noexcept{
+        w.draw(o);
+    }
+    template<std::derived_from<sf::Drawable> T>
+    void draw(std::span<const T> objects) noexcept{
+        for(const auto& i : objects){
+            w.draw(i);
+        }
     }
     auto width() const noexcept{
         return w.getSize().x;

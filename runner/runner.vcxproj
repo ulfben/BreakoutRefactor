@@ -105,17 +105,16 @@
     <ClCompile Include="include\OwningTexture.hpp" />
     <ClCompile Include="src\application.cpp" />
     <ClCompile Include="src\main.cpp" />
-    <ClCompile Include="src\Stars.cpp" />
-    <ClCompile Include="src\PlayerCharacter.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\application.hpp" />
     <ClInclude Include="include\Ball.h" />
+    <ClInclude Include="include\Configs.hpp" />
     <ClInclude Include="include\Wall.h" />
     <ClInclude Include="include\MyWindow.hpp" />
     <ClInclude Include="include\OwningFont.hpp" />
     <ClInclude Include="include\Stars.h" />
-    <ClInclude Include="include\PlayerCharacter.h" />
+    <ClInclude Include="include\Paddle.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -4,6 +4,8 @@
 #include "SFML/Graphics/Sprite.hpp"
 #include "SFML/Graphics/RenderWindow.hpp"
 #include "OwningTexture.hpp"
+#include "MyWindow.hpp"
+#include <algorithm>
 class Wall final{
     static constexpr auto BRICK_COUNT = 13;
     static constexpr auto BRICK_WIDTH = 100;
@@ -20,6 +22,31 @@ public:
             x += BRICK_WIDTH;
         }
     }
+
+    sf::FloatRect getBounds() const noexcept{
+        if(bricks.empty()){
+            return sf::FloatRect();
+        }
+        const auto [minX, maxX] = std::minmax_element(bricks.begin(), bricks.end(),
+            [](const auto& a, const auto& b){
+                return a.getGlobalBounds().left < b.getGlobalBounds().left;
+            });        
+        const auto [minY, maxY] = std::minmax_element(bricks.begin(), bricks.end(),
+            [](const auto& a, const auto& b){
+                return a.getGlobalBounds().top < b.getGlobalBounds().top;
+            });        
+        const auto& minXBounds = minX->getGlobalBounds();
+        const auto& maxXBounds = maxX->getGlobalBounds();
+        const auto& minYBounds = minY->getGlobalBounds();
+        const auto& maxYBounds = maxY->getGlobalBounds();                
+        return sf::FloatRect(
+            minXBounds.left,
+            minYBounds.top,
+            (maxXBounds.left + maxXBounds.width) - minXBounds.left, // width
+            (maxYBounds.top + maxYBounds.height) - minYBounds.top  // height
+        );
+    }
+
     [[nodiscard]] bool empty() const noexcept{
         return bricks.empty();
     }
@@ -37,9 +64,7 @@ public:
             });
     }
 
-    void render(sf::RenderWindow& w) const noexcept{
-        for(auto& sprite : bricks){
-            w.draw(sprite);
-        }
+    void render(MyWindow& w) const noexcept{
+        w.draw(std::span(bricks));
     }
 };
