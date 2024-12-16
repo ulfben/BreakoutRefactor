@@ -19,6 +19,7 @@
 #include <SFML/Graphics/Font.hpp>
 #include <string>
 #include <optional>
+#include "Highscore.hpp"
 
 namespace runner {
     static inline sf::Text createText(std::string_view s, const OwningFont& font, unsigned size, sf::Uint32 textStyle, float positionX, float positionY){
@@ -33,7 +34,7 @@ namespace runner {
 
     class Application final{
     public:
-        Application();
+        Application() = default;
         void run() noexcept;
 
     private:
@@ -43,13 +44,13 @@ namespace runner {
         void input() noexcept;
         bool update() noexcept;
         void render() noexcept; //can't be const due to SFML Window API
-        void checkCollisions() noexcept;
-        void doScore() noexcept;
+        void check_collisions() noexcept;
+        void do_score() noexcept;
         void restart() noexcept ;        
         void on_key_released(const sf::Keyboard::Key key) noexcept;
-        void loadHighScore();
-        void saveHighscore();
+        
 
+        Highscore highscore{"assets/HighScore.txt"};
         MyWindow window{"Breakout!", {1280, 720}, sf::Style::Titlebar | sf::Style::Close};
         OwningFont m_font{"assets/sunny-spells-font/SunnyspellsRegular-MV9ze.otf"};
         sf::Text startMenuText = createText("Press `space´ to start", m_font, 100u, sf::Text::Bold, 250, 250);
@@ -61,14 +62,13 @@ namespace runner {
         OwningTexture ballTex{"assets/Ball.png"};
         OwningTexture brickTex{"assets/WhiteHitBrick.png"};
         OwningTexture starTex{"assets/FallingStar.png"};
-        Stars            stars{starTex, window.height()};
-        Wall             wall{brickTex};
-        Paddle  m_player{playerTex};
-        Ball             m_ball{ballTex};
+        Stars stars{starTex, window.height()};
+        Wall wall{brickTex};
+        Paddle m_player{playerTex};
+        Ball m_ball{ballTex};
         State m_state = State::pregame;
-        sf::Clock        m_clock;
+        sf::Clock m_clock;
         bool m_running = true;
-        int m_highScoreInt = 0;
-        int m_currentScore = 0;
+        unsigned score = 0; 
     };
 }

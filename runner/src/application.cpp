@@ -16,10 +16,6 @@
 #include <string>
 #include <stdexcept>
 namespace runner{
-    Application::Application(){
-        loadHighScore();
-    }
-
     void Application::run() noexcept{
         while(window.isOpen()){
             input();
@@ -47,9 +43,9 @@ namespace runner{
             stars.update(m_deltatime.asSeconds());
             m_player.update(m_deltatime.asSeconds());
             m_ball.update(m_deltatime.asSeconds());
-            checkCollisions();
+            check_collisions();
         } else{
-            highscoreText.setString(std::format("HighScore: {}", m_highScoreInt));
+            highscoreText.setString(std::format("HighScore: {}", score));
         }
         if(wall.empty()){
             m_state = State::win;
@@ -71,17 +67,17 @@ namespace runner{
         }
         if(m_state == State::lose){
             window.draw(loseText);
-            saveHighscore();
+            highscore.save(score);
         }
         if(m_state == State::win){
             window.draw(winText);
-            saveHighscore();
+            highscore.save(score);
         }
         window.draw(highscoreText);
         window.display();
     }
 
-    void Application::checkCollisions() noexcept{
+    void Application::check_collisions() noexcept{
         if(m_ball.isBehind(m_player.sprite)){
             m_state = State::lose;
             return;
@@ -91,7 +87,7 @@ namespace runner{
         m_player.constrainTo(bounds);
         m_ball.checkCollisionWith(m_player.sprite); 
         if(m_ball.checkCollisionWith(wall)){        
-            doScore();            
+            do_score();            
         }
     }
   
@@ -108,37 +104,14 @@ namespace runner{
     }
 
     void Application::restart() noexcept{
-        m_currentScore = 0;
+        score = 0;
         m_ball = Ball{ballTex};
         m_player = Paddle(playerTex);
         wall = Wall(brickTex);
     }
 
-    void Application::doScore() noexcept{
-        m_currentScore++;
-        scoreText.setString(std::format("Score: {}", m_currentScore));
-    }
-
-    void Application::loadHighScore(){
-        std::ifstream readFile;
-        readFile.open("assets/HighScore.txt");
-        if(readFile.is_open()){
-            while(!readFile.eof()){
-                readFile >> m_highScoreInt;
-            }
-
-        }
-        readFile.close();
-    };
-
-    void Application::saveHighscore(){
-        std::ofstream writeFile("assets/HighScore.txt");
-        if(writeFile.is_open()){
-            if(m_currentScore > m_highScoreInt){
-                m_highScoreInt = m_currentScore;
-            }
-            writeFile << m_highScoreInt;
-        }
-        writeFile.close();
+    void Application::do_score() noexcept{
+        score++;
+        scoreText.setString(std::format("Score: {}", score));
     }
 }

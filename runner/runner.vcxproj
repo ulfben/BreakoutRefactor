@@ -110,6 +110,7 @@
     <ClInclude Include="include\application.hpp" />
     <ClInclude Include="include\Ball.h" />
     <ClInclude Include="include\Configs.hpp" />
+    <ClInclude Include="include\Highscore.hpp" />
     <ClInclude Include="include\Wall.h" />
     <ClInclude Include="include\MyWindow.hpp" />
     <ClInclude Include="include\OwningFont.hpp" />
