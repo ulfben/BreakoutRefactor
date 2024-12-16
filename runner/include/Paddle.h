@@ -3,6 +3,7 @@
 #include "SFML/Graphics/Sprite.hpp"
 #include "OwningTexture.hpp"
 #include "SFML/System/Vector2.hpp"
+#include "SFML/Window/Keyboard.hpp"
 #include "MyWindow.hpp"
 
 class Paddle final{
@@ -13,23 +14,19 @@ public:
         sprite.setScale(PLAYER_SCALE);
     };
     void update(float deltatime) noexcept{
-        float dir = pressedLeft ? -PLAYER_SPEED : (pressedRight ? PLAYER_SPEED : 0.0f);
+        const auto pressingLeft = sf::Keyboard::isKeyPressed(sf::Keyboard::Left);
+        const auto pressingRight = sf::Keyboard::isKeyPressed(sf::Keyboard::Right);       
+        float dir = pressingLeft ? -PLAYER_SPEED : (pressingRight ? PLAYER_SPEED : 0.0f);
         sprite.move(dir * deltatime, 0.0f);
     }
     void render(MyWindow& w) const noexcept{
         w.draw(sprite);
-    };
+    }
     void constrainTo(const sf::FloatRect& bounds) noexcept{
         sf::Vector2f position = sprite.getPosition();  
         sf::FloatRect paddleBounds = sprite.getGlobalBounds();        
-        if(position.x < bounds.left){
-            position.x = bounds.left;
-        } else if(position.x + paddleBounds.width > bounds.left + bounds.width){
-            position.x = bounds.left + bounds.width - paddleBounds.width;
-        }        
+        position.x = std::clamp(position.x, bounds.left, bounds.left + bounds.width - paddleBounds.width);
         sprite.setPosition(position);
     }
     sf::Sprite sprite;
-    bool pressedLeft = false;
-    bool pressedRight = false;
 };

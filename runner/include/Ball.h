@@ -37,7 +37,7 @@ public:
     }
 
     bool checkCollisionWith(Wall& wall) noexcept{
-        if(!is_overlapping(sprite, wall.getBounds())){
+        if(!is_colliding(sprite, wall.getBounds())){
             return false;
         }
         for(const auto& brick : wall){

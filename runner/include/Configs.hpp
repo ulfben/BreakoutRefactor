@@ -1,5 +1,6 @@
 #pragma once
 #include "SFML/Graphics/Sprite.hpp"
+#include <utility>
 #include <optional>
 #include <numbers>
 #include <cmath>
@@ -29,15 +30,22 @@ static inline [[nodiscard]] bool is_colliding(const sf::Sprite& box1, const sf::
     return box1.getGlobalBounds().intersects(box2.getGlobalBounds());
 }
 
-static inline [[nodiscard]] bool is_overlapping(const sf::Sprite& s, const sf::FloatRect& bounds)  noexcept{
+static inline [[nodiscard]] bool is_colliding(const sf::Sprite& s, const sf::FloatRect& bounds)  noexcept{
     return s.getGlobalBounds().intersects(bounds);
 }
 
-static inline [[nodiscard]] bool isInside(const sf::Sprite sprite, const sf::FloatRect& bound) noexcept{
-        sf::FloatRect spriteBounds = sprite.getGlobalBounds();
-        return bound.contains(spriteBounds.left, spriteBounds.top) &&
-            bound.contains(spriteBounds.left + spriteBounds.width, spriteBounds.top + spriteBounds.height);
-    }
+static inline [[nodiscard]] bool is_inside(const sf::Sprite sprite, const sf::FloatRect& bound) noexcept{
+    sf::FloatRect spriteBounds = sprite.getGlobalBounds();
+    return bound.contains(spriteBounds.left, spriteBounds.top) &&
+        bound.contains(spriteBounds.left + spriteBounds.width, spriteBounds.top + spriteBounds.height);
+}
+
+static inline void constrainTo(sf::Sprite& sprite, const sf::FloatRect& bounds) noexcept{
+    sf::Vector2f position = sprite.getPosition();
+    sf::FloatRect paddleBounds = sprite.getGlobalBounds();
+    position.x = std::clamp(position.x, bounds.left, bounds.left + bounds.width - paddleBounds.width);
+    sprite.setPosition(position);
+}
 
 static inline sf::Vector2f normalize(const sf::Vector2f& source) noexcept{
     const float length = std::sqrt((source.x * source.x) + (source.y * source.y));

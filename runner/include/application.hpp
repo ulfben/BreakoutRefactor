@@ -45,8 +45,7 @@ namespace runner {
         void render() noexcept; //can't be const due to SFML Window API
         void checkCollisions() noexcept;
         void doScore() noexcept;
-        void restart() noexcept ;
-        void on_key_pressed(const sf::Keyboard::Key key) noexcept;
+        void restart() noexcept ;        
         void on_key_released(const sf::Keyboard::Key key) noexcept;
         void loadHighScore();
         void saveHighscore();

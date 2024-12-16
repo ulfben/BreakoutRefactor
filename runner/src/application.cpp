@@ -33,9 +33,7 @@ namespace runner{
     void Application::input() noexcept{
         sf::Event event;
         while(window.pollEvent(event)){
-            if(event.type == sf::Event::KeyPressed){
-                on_key_pressed(event.key.code);
-            } else if(event.type == sf::Event::KeyReleased){
+            if(event.type == sf::Event::KeyReleased){
                 on_key_released(event.key.code);
             } else if(event.type == sf::Event::Closed){
                 window.close();
@@ -91,34 +89,23 @@ namespace runner{
             return;
         }
         const auto bounds = sf::FloatRect(0.0f, 0.0f, window.fwidth(), window.fheight());
-        m_ball.constrainTo(bounds);
+        m_ball.constrainTo(bounds);        
         m_player.constrainTo(bounds);
         m_ball.checkCollisionWith(m_player.sprite); 
         if(m_ball.checkCollisionWith(wall)){        
             doScore();            
         }
     }
-
-    void Application::on_key_pressed(const sf::Keyboard::Key key) noexcept{
+  
+    void Application::on_key_released(const sf::Keyboard::Key key) noexcept{
         if(key == sf::Keyboard::Key::Escape){
             m_running = false;
-        }
-        m_player.pressedLeft = (key == sf::Keyboard::Key::Left);
-        m_player.pressedRight = (key == sf::Keyboard::Right);
+        }     
         if(key == sf::Keyboard::Key::Space && m_state == State::pregame){
             m_state = State::running;
         } else if(key == sf::Keyboard::Key::Space && (m_state == State::lose || m_state == State::win)){
             m_state = State::running;
             restart();
-        }
-    }
-
-    void Application::on_key_released(const sf::Keyboard::Key key) noexcept{
-        if(key == sf::Keyboard::Right){
-            m_player.pressedRight = false;
-        }
-        if(key == sf::Keyboard::Key::Left){
-            m_player.pressedLeft = false;
         }
     }
 

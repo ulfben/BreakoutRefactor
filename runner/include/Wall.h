@@ -27,11 +27,11 @@ public:
         if(bricks.empty()){
             return sf::FloatRect();
         }
-        const auto [minX, maxX] = std::minmax_element(bricks.begin(), bricks.end(),
+        const auto [minX, maxX] = std::ranges::minmax_element(bricks,
             [](const auto& a, const auto& b){
                 return a.getGlobalBounds().left < b.getGlobalBounds().left;
             });        
-        const auto [minY, maxY] = std::minmax_element(bricks.begin(), bricks.end(),
+        const auto [minY, maxY] = std::ranges::minmax_element(bricks,
             [](const auto& a, const auto& b){
                 return a.getGlobalBounds().top < b.getGlobalBounds().top;
             });        
