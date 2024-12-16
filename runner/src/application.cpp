@@ -128,13 +128,31 @@ namespace runner
     void Application::CollisionCheck(){
         handlePaddleBallCollision(m_player.m_playerSprite, m_ball.m_ballSprite, m_ball.m_direction);
         for(auto& brick : wall){
-            if(is_colliding(brick, m_ball.m_ballSprite)){
-                m_ball.m_direction.y = -m_ball.m_direction.y;
-                m_ball.m_speed += 100.0f;
-                wall.erase(brick); //TODO: this is incredibly dumb to do during iteration
-                doScore();
-                break;
+            const auto intersection = get_overlap(brick, m_ball.m_ballSprite);
+            if(!intersection){
+                continue;
             }
+            const float overlapWidth = intersection->width;
+            const float overlapHeight = intersection->height;            
+            if(overlapWidth > overlapHeight){ // If overlap is wider than tall, hit was on top/bottom            
+                m_ball.m_direction.y *= -1.0f;                
+                if(m_ball.m_direction.y < 0){
+                    m_ball.m_ballSprite.move(0, overlapHeight);
+                } else{
+                    m_ball.m_ballSprite.move(0, -overlapHeight);
+                }
+            } else{ // If overlap is taller than wide, hit was on sides
+                m_ball.m_direction.x *= -1.0f;                
+                if(m_ball.m_direction.x < 0){
+                    m_ball.m_ballSprite.move(overlapWidth, 0);
+                } else{
+                    m_ball.m_ballSprite.move(-overlapWidth, 0);
+                }
+            }          
+            m_ball.m_speed += 100.0f;
+            wall.erase(brick); //TODO: this is incredibly dumb to do during iteration
+            doScore();
+            break;
         }
         if(m_ball.m_ballSprite.getPosition().y >= static_cast<float>(window.height())){
             m_state = State::lose;
@@ -173,12 +191,21 @@ namespace runner
         return box1.getGlobalBounds().intersects(box2.getGlobalBounds());
     }
 
+
+    [[nodiscard]] std::optional<sf::FloatRect> Application::get_overlap(const sf::Sprite& box1, const sf::Sprite& box2) const noexcept{
+        sf::FloatRect intersection;
+        if(box1.getGlobalBounds().intersects(box2.getGlobalBounds(), intersection)){
+            return intersection;
+        }
+        return std::nullopt;
+    }
+
     void Application::handlePaddleBallCollision(const sf::Sprite& paddle, sf::Sprite& ball, sf::Vector2f& ballVelocity) const noexcept{
         if(!is_colliding(paddle, ball)){
             return;
         }
         const float ball_x = ball.getPosition().x;
-        const float paddleHalfWidth = paddle.getGlobalBounds().width / 2.0f;        
+        const float paddleHalfWidth = paddle.getGlobalBounds().width / 2.0f;
         const float paddleLeft = paddle.getGlobalBounds().left;
         const float relativeIntersectX = std::clamp((ball_x - paddleLeft - paddleHalfWidth) / paddleHalfWidth, -1.0f, 1.0f);
         const float angle = relativeIntersectX * MAX_BOUNCE_ANGLE;

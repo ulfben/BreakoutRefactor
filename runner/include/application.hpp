@@ -17,6 +17,7 @@
 #include <SFML/Window/Mouse.hpp>
 #include <SFML/Graphics/Font.hpp>
 #include <string>
+#include <optional>
 
 namespace runner {
     static inline sf::Text createText(std::string_view s, const OwningFont& font, unsigned size, sf::Uint32 textStyle, float positionX, float positionY){
@@ -53,6 +54,7 @@ namespace runner {
         void saveHighscore();
 
         [[nodiscard]] bool is_colliding(const sf::Sprite& box1, const sf::Sprite& box2) const noexcept;
+        [[nodiscard]] std::optional<sf::FloatRect> get_overlap(const sf::Sprite& box1, const sf::Sprite& box2) const noexcept;
         void handlePaddleBallCollision(const sf::Sprite& paddle, sf::Sprite& ball, sf::Vector2f& ballVelocity) const noexcept;
 
         MyWindow window{"Breakout!", {1280, 720}, sf::Style::Titlebar | sf::Style::Close};
