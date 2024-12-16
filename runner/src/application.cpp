@@ -15,9 +15,11 @@
 #include <SFML/Window/WindowStyle.hpp>
 #include <string>
 #include <stdexcept>
-
+#include <numbers>
 namespace runner
 {
+    static constexpr auto TO_RAD = std::numbers::pi_v<float> / 180.0f;
+    static constexpr auto MAX_BOUNCE_ANGLE = 75.0f * TO_RAD;
     Application::Application(){
         loadHighScore();
     }
@@ -124,9 +126,7 @@ namespace runner
     }
 
     void Application::CollisionCheck(){
-        if(is_colliding(m_player.m_playerSprite, m_ball.m_ballSprite)){
-            m_ball.m_direction.y = -m_ball.m_direction.y;
-        }
+        handlePaddleBallCollision(m_player.m_playerSprite, m_ball.m_ballSprite, m_ball.m_direction);
         for(auto& brick : wall){
             if(is_colliding(brick, m_ball.m_ballSprite)){
                 m_ball.m_direction.y = -m_ball.m_direction.y;
@@ -172,4 +172,20 @@ namespace runner
     bool Application::is_colliding(const sf::Sprite& box1, const sf::Sprite& box2) const noexcept{
         return box1.getGlobalBounds().intersects(box2.getGlobalBounds());
     }
+
+    void Application::handlePaddleBallCollision(const sf::Sprite& paddle, sf::Sprite& ball, sf::Vector2f& ballVelocity) const noexcept{
+        if(!is_colliding(paddle, ball)){
+            return;
+        }
+        const float ball_x = ball.getPosition().x;
+        const float paddleHalfWidth = paddle.getGlobalBounds().width / 2.0f;        
+        const float paddleLeft = paddle.getGlobalBounds().left;
+        const float relativeIntersectX = std::clamp((ball_x - paddleLeft - paddleHalfWidth) / paddleHalfWidth, -1.0f, 1.0f);
+        const float angle = relativeIntersectX * MAX_BOUNCE_ANGLE;
+        const float speed = std::sqrt(ballVelocity.x * ballVelocity.x + ballVelocity.y * ballVelocity.y);
+        ballVelocity.x = speed * std::sin(angle);
+        ballVelocity.y = -speed * std::cos(angle);
+        ball.setPosition(ball_x, paddle.getGlobalBounds().top - ball.getGlobalBounds().height / 2); //move the ball out of the paddle
+    }
+
 }

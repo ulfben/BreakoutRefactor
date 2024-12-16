@@ -53,6 +53,7 @@ namespace runner {
         void saveHighscore();
 
         [[nodiscard]] bool is_colliding(const sf::Sprite& box1, const sf::Sprite& box2) const noexcept;
+        void handlePaddleBallCollision(const sf::Sprite& paddle, sf::Sprite& ball, sf::Vector2f& ballVelocity) const noexcept;
 
         MyWindow window{"Breakout!", {1280, 720}, sf::Style::Titlebar | sf::Style::Close};
         OwningFont m_font{"assets/sunny-spells-font/SunnyspellsRegular-MV9ze.otf"};
