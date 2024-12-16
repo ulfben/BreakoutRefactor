@@ -23,6 +23,12 @@ public:
     auto height() const noexcept{
         return w.getSize().y;
     }
+    float fwidth() const noexcept{
+        return static_cast<float>(w.getSize().x);
+    }
+    float fheight() const noexcept{
+        return static_cast<float>(w.getSize().y);
+    }
     auto isOpen() const noexcept{
         return w.isOpen();
     }

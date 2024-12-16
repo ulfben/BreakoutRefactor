@@ -24,9 +24,6 @@
     <ClCompile Include="src\PlayerCharacter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Ball.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\Stars.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>

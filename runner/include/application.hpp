@@ -56,6 +56,8 @@ namespace runner {
         [[nodiscard]] bool is_colliding(const sf::Sprite& box1, const sf::Sprite& box2) const noexcept;
         [[nodiscard]] std::optional<sf::FloatRect> get_overlap(const sf::Sprite& box1, const sf::Sprite& box2) const noexcept;
         void handlePaddleBallCollision(const sf::Sprite& paddle, sf::Sprite& ball, sf::Vector2f& ballVelocity) const noexcept;
+        void handleBounds(Ball& ball, const sf::FloatRect bounds) const noexcept;
+        bool isBehindPlayer(const Ball& ball) const noexcept;
 
         MyWindow window{"Breakout!", {1280, 720}, sf::Style::Titlebar | sf::Style::Close};
         OwningFont m_font{"assets/sunny-spells-font/SunnyspellsRegular-MV9ze.otf"};
@@ -71,7 +73,7 @@ namespace runner {
         Stars            stars{starTex, window.height()};
         Wall             wall{brickTex};
         PlayerCharacter  m_player{playerTex,  window.width()};
-        Ball             m_ball{ballTex,  window.width(), window.height()};
+        Ball             m_ball{ballTex};
         State m_state = State::pregame;
         sf::Clock        m_clock;
         bool m_running = true;

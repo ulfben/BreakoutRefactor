@@ -5,11 +5,11 @@
 #include "SFML/Graphics/RenderWindow.hpp"
 #include "OwningTexture.hpp"
 class Wall final{
-      static constexpr auto BRICK_COUNT = 13;
+    static constexpr auto BRICK_COUNT = 13;
     static constexpr auto BRICK_WIDTH = 100;
     std::vector<sf::Sprite> bricks;
     using Iterator = std::vector<sf::Sprite>::iterator;
-public:  
+public:
     explicit Wall(const OwningTexture& texture){
         float x = 0;
         float y = 100;
@@ -22,7 +22,7 @@ public:
     }
     [[nodiscard]] bool empty() const noexcept{
         return bricks.empty();
-    }   
+    }
 
     auto begin() noexcept{
         return bricks.begin();

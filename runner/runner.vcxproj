@@ -104,7 +104,6 @@
   <ItemGroup>
     <ClCompile Include="include\OwningTexture.hpp" />
     <ClCompile Include="src\application.cpp" />
-    <ClCompile Include="src\Ball.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\Stars.cpp" />
     <ClCompile Include="src\PlayerCharacter.cpp" />

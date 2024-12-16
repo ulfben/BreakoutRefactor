@@ -52,7 +52,7 @@ namespace runner
         if(m_state == State::running){
             stars.update(m_deltatime.asSeconds());
             m_player.PlayerUpdate(m_deltatime.asSeconds());
-            m_ball.BallUpdate(m_deltatime.asSeconds());
+            m_ball.update(m_deltatime.asSeconds());
             CollisionCheck();
         } else{
             highscoreText.setString(std::format("HighScore: {}", m_highScoreInt));
@@ -73,7 +73,7 @@ namespace runner
             stars.render(w);
             w.draw(scoreText);
             w.draw(m_player.m_playerSprite);
-            w.draw(m_ball.m_ballSprite);
+            w.draw(m_ball.sprite);
             wall.render(w);
         }
 
@@ -120,42 +120,45 @@ namespace runner
 
     void Application::Restart(){
         m_currentScore = 0;
-        m_ball.Restart();
+        m_ball = Ball{ballTex};
         m_player.Restart();
         wall = Wall(brickTex);
     }
 
     void Application::CollisionCheck(){
-        handlePaddleBallCollision(m_player.m_playerSprite, m_ball.m_ballSprite, m_ball.m_direction);
-        for(auto& brick : wall){
-            const auto intersection = get_overlap(brick, m_ball.m_ballSprite);
+        handlePaddleBallCollision(m_player.m_playerSprite, m_ball.sprite, m_ball.direction);
+        const auto bounds = sf::FloatRect(0.0f, 0.0f, window.fwidth(), window.fheight());
+        handleBounds(m_ball, bounds);
+        if(isBehindPlayer(m_ball)){
+            m_state = State::lose;
+            return;
+        }
+        for(const auto& brick : wall){
+            const auto intersection = get_overlap(brick, m_ball.sprite);
             if(!intersection){
                 continue;
             }
             const float overlapWidth = intersection->width;
-            const float overlapHeight = intersection->height;            
+            const float overlapHeight = intersection->height;
             if(overlapWidth > overlapHeight){ // If overlap is wider than tall, hit was on top/bottom            
-                m_ball.m_direction.y *= -1.0f;                
-                if(m_ball.m_direction.y < 0){
-                    m_ball.m_ballSprite.move(0, overlapHeight);
+                m_ball.direction.y *= -1.0f;
+                if(m_ball.direction.y < 0){
+                    m_ball.sprite.move(0, overlapHeight);
                 } else{
-                    m_ball.m_ballSprite.move(0, -overlapHeight);
+                    m_ball.sprite.move(0, -overlapHeight);
                 }
             } else{ // If overlap is taller than wide, hit was on sides
-                m_ball.m_direction.x *= -1.0f;                
-                if(m_ball.m_direction.x < 0){
-                    m_ball.m_ballSprite.move(overlapWidth, 0);
+                m_ball.direction.x *= -1.0f;
+                if(m_ball.direction.x < 0){
+                    m_ball.sprite.move(overlapWidth, 0);
                 } else{
-                    m_ball.m_ballSprite.move(-overlapWidth, 0);
+                    m_ball.sprite.move(-overlapWidth, 0);
                 }
-            }          
-            m_ball.m_speed += 100.0f;
+            }
+            m_ball.speed += 100.0f;
             wall.erase(brick); //TODO: this is incredibly dumb to do during iteration
             doScore();
             break;
-        }
-        if(m_ball.m_ballSprite.getPosition().y >= static_cast<float>(window.height())){
-            m_state = State::lose;
         }
     }
 
@@ -213,6 +216,26 @@ namespace runner
         ballVelocity.x = speed * std::sin(angle);
         ballVelocity.y = -speed * std::cos(angle);
         ball.setPosition(ball_x, paddle.getGlobalBounds().top - ball.getGlobalBounds().height / 2); //move the ball out of the paddle
+    }
+
+    void Application::handleBounds(Ball& ball, const sf::FloatRect bounds) const noexcept{
+        const auto ballBounds = ball.sprite.getGlobalBounds();
+        const bool hitLeft = ballBounds.left < bounds.left;
+        const bool hitRight = ballBounds.left + ballBounds.width > bounds.left + bounds.width;
+        if(hitLeft || hitRight){            
+            ball.direction.x = (hitLeft ? 1.0f : -1.0f) * std::abs(ball.direction.x);            
+            const float newX = hitLeft ? bounds.left : bounds.left + bounds.width - ballBounds.width;
+            ball.sprite.setPosition(newX, ballBounds.top);
+            return;
+        }        
+        if(ballBounds.top < bounds.top){
+            ball.direction.y = std::abs(ball.direction.y);
+            ball.sprite.setPosition(ballBounds.left, bounds.top);
+        }
+    }
+
+    bool Application::isBehindPlayer(const Ball& ball) const noexcept{
+        return ball.sprite.getGlobalBounds().top > m_player.m_playerSprite.getGlobalBounds().top + m_player.m_playerSprite.getGlobalBounds().height;
     }
 
 }
