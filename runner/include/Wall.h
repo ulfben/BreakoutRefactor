@@ -35,7 +35,7 @@ public:
             [](const auto& a, const auto& b){
                 return a.getGlobalBounds().top < b.getGlobalBounds().top;
             });        
-        const auto& minXBounds = minX->getGlobalBounds();
+        const auto& minXBounds = minX->getGlobalBounds();               
         const auto& maxXBounds = maxX->getGlobalBounds();
         const auto& minYBounds = minY->getGlobalBounds();
         const auto& maxYBounds = maxY->getGlobalBounds();                

@@ -84,12 +84,6 @@ public:
     }
 
 private:
-    bool isInside(sf::FloatRect bound) const noexcept{
-        sf::FloatRect ballBounds = sprite.getGlobalBounds();
-        return bound.contains(ballBounds.left, ballBounds.top) &&
-            bound.contains(ballBounds.left + ballBounds.width, ballBounds.top + ballBounds.height);
-    }
-
     sf::Sprite sprite;
     sf::Vector2f direction = sf::Vector2f(0.0f, -1.0f);
     float speed = BALL_STARTING_SPEED;

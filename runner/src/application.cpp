@@ -20,7 +20,7 @@ namespace runner{
         loadHighScore();
     }
 
-    void Application::run(){
+    void Application::run() noexcept{
         while(window.isOpen()){
             input();
             if(!update()){
@@ -43,7 +43,7 @@ namespace runner{
         }
     }
 
-    bool Application::update(){
+    bool Application::update() noexcept{
         auto m_deltatime = m_clock.restart();
         if(m_state == State::running){
             stars.update(m_deltatime.asSeconds());
@@ -85,7 +85,7 @@ namespace runner{
         w.display();
     }
 
-    void Application::checkCollisions(){
+    void Application::checkCollisions() noexcept{
         if(m_ball.isBehind(m_player.sprite)){
             m_state = State::lose;
             return;
@@ -99,7 +99,7 @@ namespace runner{
         }
     }
 
-    void Application::on_key_pressed(const sf::Keyboard::Key key){
+    void Application::on_key_pressed(const sf::Keyboard::Key key) noexcept{
         if(key == sf::Keyboard::Key::Escape){
             m_running = false;
         }
@@ -113,7 +113,7 @@ namespace runner{
         }
     }
 
-    void Application::on_key_released(const sf::Keyboard::Key key){
+    void Application::on_key_released(const sf::Keyboard::Key key) noexcept{
         if(key == sf::Keyboard::Right){
             m_player.pressedRight = false;
         }
@@ -122,14 +122,14 @@ namespace runner{
         }
     }
 
-    void Application::restart(){
+    void Application::restart() noexcept{
         m_currentScore = 0;
         m_ball = Ball{ballTex};
         m_player = Paddle(playerTex);
         wall = Wall(brickTex);
     }
 
-    void Application::doScore(){
+    void Application::doScore() noexcept{
         m_currentScore++;
         scoreText.setString(std::format("Score: {}", m_currentScore));
     }

@@ -34,23 +34,20 @@ namespace runner {
     class Application final{
     public:
         Application();
-        void run();
+        void run() noexcept;
 
     private:
         enum class State{
             win, lose, running, pregame
-        };
-        enum class TextureName{
-            Texture_player, Texture_ball, Texture_brick
-        };
+        };  
         void input() noexcept;
-        bool update();
+        bool update() noexcept;
         void render() noexcept; //can't be const due to SFML Window API
-        void checkCollisions();
-        void doScore();
-        void restart();
-        void on_key_pressed(const sf::Keyboard::Key key);
-        void on_key_released(const sf::Keyboard::Key key);
+        void checkCollisions() noexcept;
+        void doScore() noexcept;
+        void restart() noexcept ;
+        void on_key_pressed(const sf::Keyboard::Key key) noexcept;
+        void on_key_released(const sf::Keyboard::Key key) noexcept;
         void loadHighScore();
         void saveHighscore();
 

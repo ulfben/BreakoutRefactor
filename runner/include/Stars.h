@@ -4,7 +4,8 @@
 #include "OwningTexture.hpp"
 #include "MyWindow.hpp"
 #include <vector>
-class Stars{
+
+class Stars final{
     unsigned stageHeight;
     std::vector<sf::Sprite> stars;
 public:

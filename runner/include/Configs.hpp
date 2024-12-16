@@ -33,6 +33,12 @@ static inline [[nodiscard]] bool is_overlapping(const sf::Sprite& s, const sf::F
     return s.getGlobalBounds().intersects(bounds);
 }
 
+static inline [[nodiscard]] bool isInside(const sf::Sprite sprite, const sf::FloatRect& bound) noexcept{
+        sf::FloatRect spriteBounds = sprite.getGlobalBounds();
+        return bound.contains(spriteBounds.left, spriteBounds.top) &&
+            bound.contains(spriteBounds.left + spriteBounds.width, spriteBounds.top + spriteBounds.height);
+    }
+
 static inline sf::Vector2f normalize(const sf::Vector2f& source) noexcept{
     const float length = std::sqrt((source.x * source.x) + (source.y * source.y));
     if(length == 0){
