@@ -18,6 +18,9 @@ public:
     auto& get() noexcept{
         return w;
     }
+    void clear(sf::Color c) noexcept{
+        w.clear(c);
+    }
     void draw(const sf::Drawable& o) noexcept{
         w.draw(o);
     }
@@ -26,6 +29,9 @@ public:
         for(const auto& i : objects){
             w.draw(i);
         }
+    }
+    void display() noexcept{
+        w.display();
     }
     auto width() const noexcept{
         return w.getSize().x;

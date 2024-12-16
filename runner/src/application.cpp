@@ -57,30 +57,28 @@ namespace runner{
         return m_running;
     }
 
-    void Application::render() noexcept{
-        auto& w = window.get();
-        w.clear(sf::Color{0x44, 0x55, 0x66, 0xff});
+    void Application::render() noexcept{        
+        window.clear(BG_COLOR);
         if(m_state == State::pregame){
-            w.draw(startMenuText);
+            window.draw(startMenuText);
         }
         if(m_state == State::running){
             stars.render(window);
-            w.draw(scoreText);
+            window.draw(scoreText);
             m_player.render(window);
             m_ball.render(window);
             wall.render(window);
         }
-
         if(m_state == State::lose){
-            w.draw(loseText);
+            window.draw(loseText);
             saveHighscore();
         }
         if(m_state == State::win){
-            w.draw(winText);
+            window.draw(winText);
             saveHighscore();
         }
-        w.draw(highscoreText);
-        w.display();
+        window.draw(highscoreText);
+        window.display();
     }
 
     void Application::checkCollisions() noexcept{
