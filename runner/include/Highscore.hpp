@@ -10,7 +10,7 @@ public:
     explicit Highscore(std::filesystem::path p) : path(std::move(p)){
         std::ifstream readFile(path);
         if(!readFile.is_open()){
-            return;
+            return; //I won't throw an exception here, because the game should still be able to run without a highscore file
         }
         while(!readFile.eof()){
             readFile >> score;

@@ -18,6 +18,16 @@ static inline const auto PLAYER_STARTING_POS = sf::Vector2f(500.0f, 650.0f);
 static inline const auto BG_COLOR = sf::Color{0x44, 0x55, 0x66, 0xff};
 static constexpr auto TO_RAD = std::numbers::pi_v<float> / 180.0f;
 static constexpr auto MAX_BOUNCE_ANGLE = 75.0f * TO_RAD;
+struct StarConfig{
+    sf::Color color;
+    float scale;
+    float baseSpeed;
+    unsigned count;
+};
+inline static const StarConfig YELLOW_CONFIG{sf::Color::Yellow, 0.5f, 25.0f, 4};
+inline static const StarConfig RED_CONFIG{sf::Color::Red, 0.3f, 7.0f, 3};
+static constexpr float STAR_STARTING_Y = -100.0f;
+static constexpr float STAR_SPEED_VARIATION = 50.0f;
 
 static inline [[nodiscard]] std::optional<sf::FloatRect> get_overlap(const sf::Sprite& box1, const sf::Sprite& box2) noexcept{
     sf::FloatRect intersection;
