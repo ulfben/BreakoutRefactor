@@ -19,7 +19,7 @@ public:
         sprite.move(direction.x * vel, direction.y * vel);
     };
     void render(MyWindow& w) const noexcept{
-        w.get().draw(sprite);
+        w.draw(sprite);
     };
 
     void checkCollisionWith(const sf::Sprite& other) noexcept{
