@@ -61,7 +61,7 @@ namespace runner {
         OwningTexture ballTex{"assets/Ball.png"};
         OwningTexture brickTex{"assets/WhiteHitBrick.png"};
         OwningTexture starTex{"assets/FallingStar.png"};
-        Stars stars{starTex, window.height()};
+        Stars stars{starTex, window};
         Wall wall{brickTex};
         Paddle m_player{playerTex};
         Ball m_ball{ballTex};

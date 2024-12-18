@@ -108,7 +108,7 @@ namespace runner{
         m_ball = Ball{ballTex};
         m_player = Paddle(playerTex);
         wall = Wall(brickTex);
-        stars = Stars(starTex, window.height());
+        stars = Stars(starTex, window);
     }
 
     void Application::do_score() noexcept{

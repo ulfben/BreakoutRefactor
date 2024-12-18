@@ -24,10 +24,10 @@ struct StarConfig{
     float baseSpeed;
     unsigned count;
 };
-inline static const StarConfig YELLOW_CONFIG{sf::Color::Yellow, 0.5f, 25.0f, 4};
-inline static const StarConfig RED_CONFIG{sf::Color::Red, 0.3f, 7.0f, 3};
+inline static const StarConfig YELLOW_CONFIG{sf::Color(255, 255, 0), 0.5f, 50.0f, 4};
+inline static const StarConfig RED_CONFIG{sf::Color(255, 0, 0), 0.3f, 14.0f, 3};
 static constexpr float STAR_STARTING_Y = -100.0f;
-static constexpr float STAR_SPEED_VARIATION = 50.0f;
+static constexpr float STAR_SPEED_VARIATION = 150.0f;
 
 static inline [[nodiscard]] std::optional<sf::FloatRect> get_overlap(const sf::Sprite& box1, const sf::Sprite& box2) noexcept{
     sf::FloatRect intersection;

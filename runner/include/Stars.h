@@ -2,6 +2,7 @@
 #pragma once
 #include "SFML/Graphics/Sprite.hpp"
 #include "SFML/System.hpp"
+#include "Configs.hpp"
 #include "OwningTexture.hpp"
 #include "MyWindow.hpp"
 #include <vector>
@@ -18,21 +19,23 @@ struct Star{
     }
 };
 class Stars final{
-    unsigned stageHeight{};
+    float stageWidth{};
+    float stageHeight{};
     PCG32 rng{};
     std::vector<Star> stars;
 
-    void initializeStars(const OwningTexture& texture, const StarConfig& config){        
+    void initializeStars(const OwningTexture& texture, const StarConfig& config){                
         for(unsigned i = 0; i < config.count; ++i){
+            float speed = config.baseSpeed + rng.between(-STAR_SPEED_VARIATION/2, STAR_SPEED_VARIATION/2);
             stars.emplace_back(texture, config,
-                rng.between(0.0f, 600.0f),
-                rng.between(25, STAR_SPEED_VARIATION)
+                rng.between(50.0f, stageWidth-50.0f),
+                speed
             );
         }
     }
 public:
-    Stars(const OwningTexture& texture, unsigned stageHeight) noexcept
-        : stageHeight(stageHeight){
+    Stars(const OwningTexture& texture, const MyWindow& window) noexcept
+        : stageWidth(window.fwidth()), stageHeight(window.fheight()){
         initializeStars(texture, YELLOW_CONFIG);
         initializeStars(texture, RED_CONFIG);
     }
@@ -42,9 +45,9 @@ public:
             auto& sprite = star.sprite;
             auto pos = sprite.getPosition();
             pos.y += star.speed * deltatime;
-            if(pos.y > static_cast<float>(stageHeight)){
+            if(pos.y > stageHeight){
                 pos.y = STAR_STARTING_Y;
-                pos.x = rng.between(0.0f, 600.0f); 
+                pos.x = rng.between(50.0f, stageWidth-50.0f); 
             }
             sprite.setPosition(pos);
         }

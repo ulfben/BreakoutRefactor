@@ -112,7 +112,7 @@ struct PCG32{
         return rng;
     }
     
-    // Operators and standard interface
+    // operators and standard interface
     constexpr result_type operator()() noexcept{
         return next();
     }
@@ -131,5 +131,5 @@ struct PCG32{
     auto operator<=>(const PCG32& other) const noexcept = default;    
 private:
     u64 state{0}; // RNG state.  All values are possible.
-    u64 inc{1}; // Controls which RNG sequence (stream) is selected. Must *always* be odd.
+    u64 inc{1}; // controls which RNG sequence (stream) is selected. Must *always* be odd.
 };
