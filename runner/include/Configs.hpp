@@ -1,10 +1,10 @@
 #pragma once
-#include "SFML/Graphics/Sprite.hpp"
 #include "pcg32.hpp"
-#include <utility>
-#include <optional>
-#include <numbers>
+#include "SFML/Graphics/Sprite.hpp"
 #include <cmath>
+#include <numbers>
+#include <optional>
+#include <utility>
 
 constexpr auto BALL_STARTING_X = 500.0f;
 constexpr auto BALL_STARTING_Y = 500.0f;

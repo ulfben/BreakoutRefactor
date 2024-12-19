@@ -31,9 +31,12 @@ public:
         const float paddleLeft = other.getGlobalBounds().left;
         const float relativeIntersectX = std::clamp((ball_x - paddleLeft - paddleHalfWidth) / paddleHalfWidth, -1.0f, 1.0f);
         const float angle = relativeIntersectX * MAX_BOUNCE_ANGLE;
-        const float vel = std::sqrt(direction.x * direction.x + direction.y * direction.y);
-        direction = sf::Vector2f(vel * std::sin(angle), -vel * std::cos(angle));
-        sprite.setPosition(ball_x, other.getGlobalBounds().top - sprite.getGlobalBounds().height / 2); //move the ball out of the paddle    
+
+        // Simply set the direction based on the bounce angle
+        direction = sf::Vector2f(std::sin(angle), -std::cos(angle));
+        // The speed member variable will be applied in update()
+
+        sprite.setPosition(ball_x, other.getGlobalBounds().top - sprite.getGlobalBounds().height / 2);
     }
 
     bool checkCollisionWith(Wall& wall) noexcept{

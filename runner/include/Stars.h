@@ -22,12 +22,11 @@ struct Star final{
     }
 
     void maybeWrap(float stageHeight, float stageWidth) noexcept{
-        auto pos = sprite.getPosition();
-        if(pos.y < stageHeight){
+        if(auto pos = sprite.getPosition(); pos.y < stageHeight){
             return;
         }
         float xpos = rng().between(STAR_MARGIN_X, stageWidth - STAR_MARGIN_X);
-        sprite.setPosition(xpos, PLAYER_STARTING_Y);
+        sprite.setPosition(xpos, STAR_STARTING_Y);
     }
 };
 
