@@ -53,7 +53,10 @@
     <ClInclude Include="include\pcg32.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\State.hpp">
+    <ClInclude Include="include\states\State.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\states\GamePlayState.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
