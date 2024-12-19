@@ -1,36 +1,45 @@
 #pragma once
 #pragma once
+#include "Configs.hpp"
+#include "MyWindow.hpp"
+#include "OwningTexture.hpp"
 #include "SFML/Graphics/Sprite.hpp"
 #include "SFML/System.hpp"
-#include "Configs.hpp"
-#include "OwningTexture.hpp"
-#include "MyWindow.hpp"
 #include <vector>
-#include "pcg32.hpp"
 
-struct Star{
+struct Star final{
     sf::Sprite sprite;
     float speed;
     Star(const OwningTexture& texture, const StarConfig& config, float xPos, float speed)
         : sprite(texture.get()), speed(speed){
         sprite.setColor(config.color);
-        sprite.setScale(config.scale, config.scale);
+        sprite.setScale(config.scale, config.scale);        
         sprite.setPosition(xPos, STAR_STARTING_Y);
     }
+
+    void update(float dt) noexcept{
+        sprite.move(0.0f, speed * dt);
+    }
+
+    void maybeWrap(float stageHeight, float stageWidth) noexcept{
+        auto pos = sprite.getPosition();
+        if(pos.y < stageHeight){
+            return;
+        }
+        float xpos = rng().between(STAR_MARGIN_X, stageWidth - STAR_MARGIN_X);
+        sprite.setPosition(xpos, PLAYER_STARTING_Y);
+    }
 };
+
 class Stars final{
     float stageWidth{};
-    float stageHeight{};
-    PCG32 rng{};
+    float stageHeight{};    
     std::vector<Star> stars;
-
-    void initializeStars(const OwningTexture& texture, const StarConfig& config){                
+    void initializeStars(const OwningTexture& texture, const StarConfig& config){
         for(unsigned i = 0; i < config.count; ++i){
-            float speed = config.baseSpeed + rng.between(-STAR_SPEED_VARIATION/2, STAR_SPEED_VARIATION/2);
-            stars.emplace_back(texture, config,
-                rng.between(50.0f, stageWidth-50.0f),
-                speed
-            );
+            float speed = rng().between(config.baseSpeed, STAR_SPEED_VARIATION);
+            float xpos = rng().between(STAR_MARGIN_X, stageWidth - STAR_MARGIN_X);
+            stars.emplace_back(texture, config, xpos, speed);
         }
     }
 public:
@@ -42,19 +51,13 @@ public:
 
     void update(float deltatime) noexcept{
         for(auto& star : stars){
-            auto& sprite = star.sprite;
-            auto pos = sprite.getPosition();
-            pos.y += star.speed * deltatime;
-            if(pos.y > stageHeight){
-                pos.y = STAR_STARTING_Y;
-                pos.x = rng.between(50.0f, stageWidth-50.0f); 
-            }
-            sprite.setPosition(pos);
+            star.update(deltatime);
+            star.maybeWrap(stageHeight, stageWidth);            
         }
     }
 
     void render(MyWindow& window) const noexcept{
-        for (const auto& star : stars) {
+        for(const auto& star : stars){
             window.draw(star.sprite);
         }
     }

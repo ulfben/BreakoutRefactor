@@ -17,6 +17,7 @@
 #include <stdexcept>
 namespace runner{
     void Application::run() noexcept{
+        rng().seed(seed::from_time());
         while(window.isOpen()){
             input();
             if(!update()){

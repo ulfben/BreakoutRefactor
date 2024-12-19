@@ -1,11 +1,18 @@
 #pragma once
+#include <bit>
+#include <cassert>
+#include <chrono>
+#include <compare>
 #include <cstdint>
 #include <limits>
-#include <compare>
+#include <random>
+#include <string_view>
+#include <thread>
 #include <utility>
 // PCG32 - Permuted Congruential Generator
 // Based on the implementation by Melissa O'Neill (https://www.pcg-random.org)
-// C++ implementation by Ulf Benjaminsson (ulfbenjaminsson.com)
+// C++ implementation by Ulf Benjaminsson (ulfbenjaminsson.com) 2024
+//  https://github.com/ulfben/cpp_prngs
 // This implementation is placed in the public domain. Use freely.
 // Satisfies 'UniformRandomBitGenerator' requirements - compatible with std::shuffle, 
 // std::sample, and most std::*_distribution classes.
@@ -61,6 +68,40 @@ struct PCG32{
         return result >> 32;
     }
 
+    constexpr bool coinToss() noexcept{
+        return next() & 1; //checks the least significant bit
+    }
+
+    //generate float in [0, 1)
+    constexpr float normalized() noexcept{
+        return 0x1.0p-32f * next(); //again, courtesy of Melissa O'Neill. See: https://www.pcg-random.org/posts/bounded-rands.html
+        //0x1.0p-32 is a binary floating point constant for 2^-32 that we use to convert a random 
+        // integer value in the range [0..2^32) into a float in the unit interval 0-1        
+        //A less terrifying, but also less efficient, way to achieve the same goal  is:         
+        //    return static_cast<float>(std::ldexp(next(), -32));
+        //see https://mumble.net/~campbell/tmp/random_real.c for more info.        
+    }
+
+    //generate float in [-1, 1)    
+    constexpr float unit_range() noexcept{
+        return 2.0f * normalized() - 1.0f;
+    }
+
+    template<std::floating_point F>
+    constexpr F between(F min, F max) noexcept{
+        assert(min < max && "pcg32::between(min, max) called with inverted range.");
+        return min + (max - min) * normalized();
+    }
+
+    template<std::integral I>
+    constexpr I between(I min, I max) noexcept{
+        assert(min < max && "pcg32::between(min, max) called with inverted range.");
+        using UI = std::make_unsigned_t<I>;
+        UI range = static_cast<UI>(max - min);
+        if(range == max()){ return next(); } //avoid overflow
+        return min + static_cast<I>(next(range));
+    }
+
     //Based on Brown, "Random Number Generation with Arbitrary Stride,"
     // Transactions of the American Nuclear Society (Nov. 1994)    
     constexpr void advance(u64 delta) noexcept{
@@ -83,21 +124,6 @@ struct PCG32{
     constexpr void backstep(u64 delta) noexcept{
         advance(u32(0) - delta);  // going backwards works due to modular arithmetic
     }
-       
-    //generate float in [0, 1)
-    constexpr float normalized() noexcept{
-        return 0x1.0p-32f * next(); //again, courtesy of Melissa O'Neill. See: https://www.pcg-random.org/posts/bounded-rands.html
-        //0x1.0p-32 is a binary floating point constant for 2^-32 that we use to convert a random 
-        // integer value in the range [0..2^32) into a float in the unit interval 0-1        
-        //A less terrifying, but also less efficient, way to achieve the same goal  is:         
-        //    return static_cast<float>(std::ldexp(next(), -32));
-        //see https://mumble.net/~campbell/tmp/random_real.c for more info.        
-    }
-
-    //generate float in [min, max)
-    constexpr float between(float min, float max) noexcept{
-        return min + (max - min) * normalized();
-    }
 
     constexpr void set_state(u64 new_state, u64 new_inc) noexcept{
         state = new_state;
@@ -111,7 +137,7 @@ struct PCG32{
         rng.set_state(saved_state, saved_inc);
         return rng;
     }
-    
+
     // operators and standard interface
     constexpr result_type operator()() noexcept{
         return next();
@@ -128,8 +154,99 @@ struct PCG32{
     constexpr void discard(u64 count) noexcept{
         advance(count);
     }
-    auto operator<=>(const PCG32& other) const noexcept = default;    
+    constexpr auto operator<=>(const PCG32& other) const noexcept = default;
 private:
     u64 state{0}; // RNG state.  All values are possible.
     u64 inc{1}; // controls which RNG sequence (stream) is selected. Must *always* be odd.
 };
+
+// Utility functions for seeding PRNGs (Pseudo Random Number Generators).
+// 
+// This namespace provides several approaches to generating high-quality seed values,
+// both at compile-time and runtime. Each entropy source has different properties
+// that make it suitable for different use cases.
+//
+// Features:
+// - Compile-time seeding via string hashing (FNV1a) and source information
+// - SplitMix64 for high-quality mixing of numeric values
+// - Runtime entropy from various sources (time, thread ID, hardware, etc.)
+// - Utilities for converting from 64-bit to 32-bit seeds
+//
+// The entropy sources are designed to be composable - you can use them individually
+// or combine them for maximum entropy when needed.
+// For details, see https://github.com/ulfben/cpp_prngs
+namespace seed {
+    using u64 = std::uint64_t;
+    using u32 = std::uint32_t;
+
+    // SplitMix64 mixing function - fast and high-quality mixing of 64-bit values
+    constexpr u64 splitmix64(u64 x) noexcept {
+        x += 0x9e3779b97f4a7c15;
+        x = (x ^ (x >> 30)) * 0xbf58476d1ce4e5b9;
+        x = (x ^ (x >> 27)) * 0x94d049bb133111eb;
+        return x ^ (x >> 31);
+    }
+    
+    // Wall clock time
+    // Properties:
+    // - High resolution (typically nanoseconds)
+    // - Monotonic (always increases)
+    // - Reflects real-world time progression
+    // - May be synchronized across machines
+    // - Useful default! seeds will vary with time
+    inline u64 from_time() noexcept {
+        const auto now = std::chrono::high_resolution_clock::now().time_since_epoch().count();
+        return splitmix64(now);
+    }
+
+    // CPU time consumed by the program
+    // Properties:
+    // - Varies with CPU frequency scaling
+    // - Affected by system load and power states
+    // - Can differ significantly from wall time in multi-threaded programs
+    inline u64 from_cpu_time() noexcept {
+        return splitmix64(static_cast<u64>(std::clock()));
+    }
+    
+    // Stack address
+    // Properties:
+    // - Varies between runs due to ASLR (Address Space Layout Randomization)
+    // - May be predictable if ASLR is disabled
+    // - Usually aligned to specific boundaries
+    // - Cheap to obtain
+    // - Potentially useful as supplementary entropy source
+    inline u64 from_stack() noexcept {
+        const auto dummy = 0;  // local variable just for its address
+        return splitmix64(reinterpret_cast<std::uintptr_t>(&dummy));
+    }
+
+    // Hardware entropy
+    // Properties:
+    // - High-quality entropy from system source (when available)
+    // - May be slow or limited on some platforms
+    // - May fall back to pseudo-random implementation
+    // - Best option when available but worth having alternatives
+    inline u64 from_entropy() noexcept {
+        std::random_device rd;
+        const auto entropy = (static_cast<u64>(rd()) << 32) | rd();
+        return splitmix64(entropy);
+    }
+
+    // Combines all available entropy sources
+    // Properties:
+    // - Maximum entropy mixing
+    // - Higher overhead
+    // - Useful when seed quality is critical
+    // - Good for initializing large-state PRNGs
+    inline u64 from_all() noexcept {
+        const auto time = from_time();
+        const auto cpu = from_cpu_time();        
+        const auto stack = from_stack();
+        const auto entropy = from_entropy();        
+        return splitmix64(time ^ cpu ^ stack ^ entropy);
+    } 
+
+    inline u32 to_32(u64 seed) noexcept {
+        return static_cast<u32>(seed ^ (seed >> 32)); //XOR-fold to preserve entropy
+    }   
+}

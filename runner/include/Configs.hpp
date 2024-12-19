@@ -1,5 +1,6 @@
 #pragma once
 #include "SFML/Graphics/Sprite.hpp"
+#include "pcg32.hpp"
 #include <utility>
 #include <optional>
 #include <numbers>
@@ -26,8 +27,16 @@ struct StarConfig{
 };
 inline static const StarConfig YELLOW_CONFIG{sf::Color(255, 255, 0), 0.5f, 50.0f, 4};
 inline static const StarConfig RED_CONFIG{sf::Color(255, 0, 0), 0.3f, 14.0f, 3};
+static constexpr float STAR_MARGIN_X = 50.0f;
 static constexpr float STAR_STARTING_Y = -100.0f;
 static constexpr float STAR_SPEED_VARIATION = 150.0f;
+
+//don't be fooled. This is a global variable. Initialization is thread-safe, but 
+// access (using the rng) is not. This is fine for our purposes.
+static inline [[nodiscard]] PCG32& rng(){ 
+    static PCG32 r{};
+    return r;
+};
 
 static inline [[nodiscard]] std::optional<sf::FloatRect> get_overlap(const sf::Sprite& box1, const sf::Sprite& box2) noexcept{
     sf::FloatRect intersection;
