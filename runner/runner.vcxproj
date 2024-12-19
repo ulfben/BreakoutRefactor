@@ -109,9 +109,11 @@
     <ClInclude Include="include\application.hpp" />
     <ClInclude Include="include\Ball.h" />
     <ClInclude Include="include\Configs.hpp" />
+    <ClInclude Include="include\states\EndGameState.hpp" />
     <ClInclude Include="include\states\GamePlayState.hpp" />
     <ClInclude Include="include\Highscore.hpp" />
     <ClInclude Include="include\pcg32.hpp" />
+    <ClInclude Include="include\states\MenuState.hpp" />
     <ClInclude Include="include\states\State.hpp" />
     <ClInclude Include="include\Wall.h" />
     <ClInclude Include="include\MyWindow.hpp" />
