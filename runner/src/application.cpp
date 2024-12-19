@@ -79,14 +79,14 @@ namespace runner{
     }
 
     void Application::check_collisions() noexcept{
-        if(m_ball.isBehind(m_player.sprite)){
+        if(m_ball.isBehind(m_player)){
             m_state = State::lose;
             return;
         }
         const auto bounds = sf::FloatRect(0.0f, 0.0f, window.fwidth(), window.fheight());
         m_ball.constrainTo(bounds);        
         m_player.constrainTo(bounds);
-        m_ball.checkCollisionWith(m_player.sprite); 
+        m_ball.checkCollisionWith(m_player); 
         if(m_ball.checkCollisionWith(wall)){        
             do_score();            
         }

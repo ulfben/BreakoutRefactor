@@ -22,6 +22,18 @@ public:
     void render(MyWindow& w) const noexcept{
         w.draw(sprite);
     }
+    float centerX() const noexcept{
+        return sprite.getPosition().x + sprite.getGlobalBounds().width / 2.0f;
+    }
+    float top() const noexcept{
+        return sprite.getGlobalBounds().top;
+    }
+    float bottom() const noexcept{
+        return sprite.getPosition().y + sprite.getGlobalBounds().height;
+    }
+    float width() const noexcept{
+        return sprite.getGlobalBounds().width;
+    }
     void constrainTo(const sf::FloatRect& bounds) noexcept{
         sf::Vector2f position = sprite.getPosition();  
         sf::FloatRect paddleBounds = sprite.getGlobalBounds();        

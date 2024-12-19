@@ -18,7 +18,7 @@ static inline const auto PLAYER_SCALE = sf::Vector2f(1.0f, 0.5f);
 static inline const auto PLAYER_STARTING_POS = sf::Vector2f(500.0f, 650.0f);
 static inline const auto BG_COLOR = sf::Color{0x44, 0x55, 0x66, 0xff};
 static constexpr auto TO_RAD = std::numbers::pi_v<float> / 180.0f;
-static constexpr auto MAX_BOUNCE_ANGLE = 75.0f * TO_RAD;
+static constexpr auto MAX_BOUNCE_ANGLE = 60.0f * TO_RAD; //constexpr float MAX_BOUNCE_ANGLE = 3.14159f / 3.0f; // 60 degrees in radians
 struct StarConfig{
     sf::Color color;
     float scale;

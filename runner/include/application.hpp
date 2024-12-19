@@ -1,14 +1,16 @@
 #pragma once
-#include "Configs.hpp"
 #include "Ball.h"
-#include "Wall.h"
-#include "Stars.h"
-#include <string_view>
-#include "Paddle.h"
-#include "OwningTexture.hpp"
-#include "OwningFont.hpp"
+#include "Configs.hpp"
+#include "Highscore.hpp"
 #include "MyWindow.hpp"
+#include "OwningFont.hpp"
+#include "OwningTexture.hpp"
+#include "Paddle.h"
 #include "SFML/Graphics/Text.hpp"
+#include "Stars.h"
+#include "Wall.h"
+#include <optional>
+#include <SFML/Graphics/Font.hpp>
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/Graphics/Sprite.hpp>
 #include <SFML/System/Clock.hpp>
@@ -16,10 +18,8 @@
 #include <SFML/System/Vector2.hpp>
 #include <SFML/Window/Keyboard.hpp>
 #include <SFML/Window/Mouse.hpp>
-#include <SFML/Graphics/Font.hpp>
 #include <string>
-#include <optional>
-#include "Highscore.hpp"
+#include <string_view>
 
 namespace runner {
     static inline sf::Text createText(std::string_view s, const OwningFont& font, unsigned size, sf::Uint32 textStyle, float positionX, float positionY){

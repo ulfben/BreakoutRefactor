@@ -3,6 +3,7 @@
 #include "SFML/Graphics/Sprite.hpp"
 #include "SFML/System/Vector2.hpp"
 #include "OwningTexture.hpp"
+#include "Paddle.h"
 #include "MyWindow.hpp"
 #include "Wall.h"
 
@@ -22,21 +23,28 @@ public:
         w.draw(sprite);
     };
 
-    void checkCollisionWith(const sf::Sprite& other) noexcept{
-        if(!is_colliding(other, sprite)){
+    float centerX() const noexcept{
+        return sprite.getPosition().x + sprite.getGlobalBounds().width / 2.0f;
+    }
+    float top() const noexcept{
+        return sprite.getGlobalBounds().top;
+    }
+    float height() const noexcept{
+        return sprite.getGlobalBounds().height;
+    }
+    void checkCollisionWith(const Paddle& paddle) noexcept{
+        if(!is_colliding(paddle.sprite, sprite)){
             return;
-        }
-        const float ball_x = sprite.getPosition().x;
-        const float paddleHalfWidth = sprite.getGlobalBounds().width / 2.0f;
-        const float paddleLeft = other.getGlobalBounds().left;
-        const float relativeIntersectX = std::clamp((ball_x - paddleLeft - paddleHalfWidth) / paddleHalfWidth, -1.0f, 1.0f);
-        const float angle = relativeIntersectX * MAX_BOUNCE_ANGLE;
-
-        // Simply set the direction based on the bounce angle
-        direction = sf::Vector2f(std::sin(angle), -std::cos(angle));
-        // The speed member variable will be applied in update()
-
-        sprite.setPosition(ball_x, other.getGlobalBounds().top - sprite.getGlobalBounds().height / 2);
+        }                                
+        const float relativeIntersectX = (centerX() - paddle.centerX()) / (paddle.width() / 2.0f);
+        const float normalizedIntersect = std::clamp(relativeIntersectX, -1.0f, 1.0f);        
+        const float angle = normalizedIntersect * MAX_BOUNCE_ANGLE;        
+        direction.x = std::sin(angle);
+        direction.y = -std::abs(std::cos(angle));  // Always bounce upward        
+        sprite.setPosition( // Ensure the ball is above the paddle
+            sprite.getPosition().x,
+            paddle.top() - height() - 1.0f
+        );
     }
 
     bool checkCollisionWith(Wall& wall) noexcept{
@@ -82,8 +90,8 @@ public:
             sprite.setPosition(ballBounds.left, bounds.top);
         }
     }
-    bool isBehind(const sf::Sprite& other) const noexcept{
-        return sprite.getGlobalBounds().top > other.getGlobalBounds().top + other.getGlobalBounds().height;
+    bool isBehind(const Paddle& other) const noexcept{
+        return top() > other.bottom();
     }
 
 private:
