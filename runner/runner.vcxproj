@@ -111,6 +111,7 @@
     <ClInclude Include="include\Configs.hpp" />
     <ClInclude Include="include\Highscore.hpp" />
     <ClInclude Include="include\pcg32.hpp" />
+    <ClInclude Include="include\State.hpp" />
     <ClInclude Include="include\Wall.h" />
     <ClInclude Include="include\MyWindow.hpp" />
     <ClInclude Include="include\OwningFont.hpp" />

@@ -53,5 +53,8 @@
     <ClInclude Include="include\pcg32.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\State.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
