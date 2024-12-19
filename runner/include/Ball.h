@@ -19,6 +19,7 @@ public:
         const auto vel = speed * deltatime;
         sprite.move(direction.x * vel, direction.y * vel);
     };
+
     void render(MyWindow& w) const noexcept{
         w.draw(sprite);
     };
@@ -26,12 +27,15 @@ public:
     float centerX() const noexcept{
         return sprite.getPosition().x + sprite.getGlobalBounds().width / 2.0f;
     }
+
     float top() const noexcept{
         return sprite.getGlobalBounds().top;
     }
+
     float height() const noexcept{
         return sprite.getGlobalBounds().height;
     }
+
     void checkCollisionWith(const Paddle& paddle) noexcept{
         if(!is_colliding(paddle.sprite, sprite)){
             return;
@@ -67,9 +71,9 @@ public:
                 direction.x *= -1.0f;
                 sprite.move(sign * displacement, 0);
             }
-
             speed += PLAYER_SPEEDUP;
-            wall.erase(brick);
+            wall.erase(brick); //TODO: not happy about the ball erasing the brick, should be the wall's responsibility
+            //consider an onCollision callback to let each entity handle their own collision responses.
             return true;
         }
         return false;
@@ -90,6 +94,7 @@ public:
             sprite.setPosition(ballBounds.left, bounds.top);
         }
     }
+
     bool isBehind(const Paddle& other) const noexcept{
         return top() > other.bottom();
     }
