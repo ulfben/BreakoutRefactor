@@ -21,16 +21,6 @@
 #include <SFML/Window/WindowStyle.hpp>
 
 namespace runner {
-    static inline sf::Text createText(std::string_view s, const OwningFont& font, unsigned size, sf::Uint32 textStyle, float positionX, float positionY) {
-        sf::Text text;
-        text.setFont(font.get());
-        text.setCharacterSize(size);
-        text.setStyle(textStyle);
-        text.setPosition(positionX, positionY);
-        text.setString(s.data());
-        return text;
-    }
-
     enum class StateType {
         Menu,
         Gameplay,

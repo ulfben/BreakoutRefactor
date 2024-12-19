@@ -1,6 +1,9 @@
 #pragma once
 #include "pcg32.hpp"
 #include "SFML/Graphics/Sprite.hpp"
+#include "SFML/Graphics/Text.hpp"
+#include "OwningFont.hpp"
+#include <string_view>
 #include <cmath>
 #include <numbers>
 #include <optional>
@@ -33,10 +36,20 @@ static constexpr float STAR_SPEED_VARIATION = 150.0f;
 
 //don't be fooled. This is a global variable. Initialization is thread-safe, but 
 // access (using the rng) is not. This is fine for our purposes.
-static inline [[nodiscard]] PCG32& rng(){ 
+static inline [[nodiscard]] PCG32& rng(){
     static PCG32 r{};
     return r;
 };
+
+static inline sf::Text createText(std::string_view s, const OwningFont& font, unsigned size, sf::Uint32 textStyle, float positionX, float positionY){
+    sf::Text text;
+    text.setFont(font.get());
+    text.setCharacterSize(size);
+    text.setStyle(textStyle);
+    text.setPosition(positionX, positionY);
+    text.setString(s.data());
+    return text;
+}
 
 static inline [[nodiscard]] std::optional<sf::FloatRect> get_overlap(const sf::Sprite& box1, const sf::Sprite& box2) noexcept{
     sf::FloatRect intersection;
