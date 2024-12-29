@@ -89,21 +89,22 @@ struct PCG32{
 
     template<std::floating_point F>
     constexpr F between(F min, F max) noexcept{
-        assert(min < max && "pcg32::between(min, max) called with inverted range.");
+        assert(min < max && "PCG32::between(min, max) called with inverted range.");
         return min + (max - min) * normalized();
     }
 
     template<std::integral I>
     constexpr I between(I min, I max) noexcept{
-        assert(min < max && "pcg32::between(min, max) called with inverted range.");
         using UI = std::make_unsigned_t<I>;
+        static_assert(std::numeric_limits<UI>::max() <= std::numeric_limits<result_type>::max(),
+            "PCG32::between() only supports types up to PCG32::result_type in size");
+        assert(min < max && "pcg32::between(min, max) called with inverted range.");        
         UI range = static_cast<UI>(max - min);
-        if(range == max()){ return next(); } //avoid overflow
-        return min + static_cast<I>(next(range));
+        return min + static_cast<I>(next(static_cast<result_type>(range)));
     }
 
-    //Based on Brown, "Random Number Generation with Arbitrary Stride,"
-    // Transactions of the American Nuclear Society (Nov. 1994)    
+        //Based on Brown, "Random Number Generation with Arbitrary Stride,"
+        // Transactions of the American Nuclear Society (Nov. 1994)    
     constexpr void advance(u64 delta) noexcept{
         u64 cur_mult = PCG32_MULT;
         u64 cur_plus = inc;
@@ -180,13 +181,13 @@ namespace seed {
     using u32 = std::uint32_t;
 
     // SplitMix64 mixing function - fast and high-quality mixing of 64-bit values
-    constexpr u64 splitmix64(u64 x) noexcept {
+    constexpr u64 splitmix64(u64 x) noexcept{
         x += 0x9e3779b97f4a7c15;
         x = (x ^ (x >> 30)) * 0xbf58476d1ce4e5b9;
         x = (x ^ (x >> 27)) * 0x94d049bb133111eb;
         return x ^ (x >> 31);
     }
-    
+
     // Wall clock time
     // Properties:
     // - High resolution (typically nanoseconds)
@@ -194,7 +195,7 @@ namespace seed {
     // - Reflects real-world time progression
     // - May be synchronized across machines
     // - Useful default! seeds will vary with time
-    inline u64 from_time() noexcept {
+    inline u64 from_time() noexcept{
         const auto now = std::chrono::high_resolution_clock::now().time_since_epoch().count();
         return splitmix64(now);
     }
@@ -204,10 +205,10 @@ namespace seed {
     // - Varies with CPU frequency scaling
     // - Affected by system load and power states
     // - Can differ significantly from wall time in multi-threaded programs
-    inline u64 from_cpu_time() noexcept {
+    inline u64 from_cpu_time() noexcept{
         return splitmix64(static_cast<u64>(std::clock()));
     }
-    
+
     // Stack address
     // Properties:
     // - Varies between runs due to ASLR (Address Space Layout Randomization)
@@ -215,7 +216,7 @@ namespace seed {
     // - Usually aligned to specific boundaries
     // - Cheap to obtain
     // - Potentially useful as supplementary entropy source
-    inline u64 from_stack() noexcept {
+    inline u64 from_stack() noexcept{
         const auto dummy = 0;  // local variable just for its address
         return splitmix64(reinterpret_cast<std::uintptr_t>(&dummy));
     }
@@ -226,7 +227,7 @@ namespace seed {
     // - May be slow or limited on some platforms
     // - May fall back to pseudo-random implementation
     // - Best option when available but worth having alternatives
-    inline u64 from_entropy() noexcept {
+    inline u64 from_entropy() noexcept{
         std::random_device rd;
         const auto entropy = (static_cast<u64>(rd()) << 32) | rd();
         return splitmix64(entropy);
@@ -238,15 +239,15 @@ namespace seed {
     // - Higher overhead
     // - Useful when seed quality is critical
     // - Good for initializing large-state PRNGs
-    inline u64 from_all() noexcept {
+    inline u64 from_all() noexcept{
         const auto time = from_time();
-        const auto cpu = from_cpu_time();        
+        const auto cpu = from_cpu_time();
         const auto stack = from_stack();
-        const auto entropy = from_entropy();        
+        const auto entropy = from_entropy();
         return splitmix64(time ^ cpu ^ stack ^ entropy);
-    } 
+    }
 
-    inline u32 to_32(u64 seed) noexcept {
+    inline u32 to_32(u64 seed) noexcept{
         return static_cast<u32>(seed ^ (seed >> 32)); //XOR-fold to preserve entropy
-    }   
+    }
 }
