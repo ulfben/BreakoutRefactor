@@ -55,7 +55,7 @@ static inline sf::Text createText(std::string_view s, const OwningFont& font, un
     return text;
 }
 
-static inline [[nodiscard]] std::optional<sf::FloatRect> get_overlap(const sf::Sprite& box1, const sf::Sprite& box2) noexcept{
+static inline [[nodiscard]] std::optional<sf::FloatRect> get_overlap(const sf::Sprite& box1, const sf::Sprite& box2){
     sf::FloatRect intersection;
     if(box1.getGlobalBounds().intersects(box2.getGlobalBounds(), intersection)){
         return intersection;
@@ -63,28 +63,28 @@ static inline [[nodiscard]] std::optional<sf::FloatRect> get_overlap(const sf::S
     return std::nullopt;
 }
 
-static inline [[nodiscard]] bool is_colliding(const sf::Sprite& box1, const sf::Sprite& box2)  noexcept{
+static inline [[nodiscard]] bool is_colliding(const sf::Sprite& box1, const sf::Sprite& box2) {
     return box1.getGlobalBounds().intersects(box2.getGlobalBounds());
 }
 
-static inline [[nodiscard]] bool is_colliding(const sf::Sprite& s, const sf::FloatRect& bounds)  noexcept{
+static inline [[nodiscard]] bool is_colliding(const sf::Sprite& s, const sf::FloatRect& bounds) {
     return s.getGlobalBounds().intersects(bounds);
 }
 
-static inline [[nodiscard]] bool is_inside(const sf::Sprite sprite, const sf::FloatRect& bound) noexcept{
-    sf::FloatRect spriteBounds = sprite.getGlobalBounds();
+static inline [[nodiscard]] bool is_inside(const sf::Sprite sprite, const sf::FloatRect& bound){
+    const sf::FloatRect spriteBounds = sprite.getGlobalBounds();
     return bound.contains(spriteBounds.left, spriteBounds.top) &&
         bound.contains(spriteBounds.left + spriteBounds.width, spriteBounds.top + spriteBounds.height);
 }
 
-static inline void constrainTo(sf::Sprite& sprite, const sf::FloatRect& bounds) noexcept{
+static inline void constrainTo(sf::Sprite& sprite, const sf::FloatRect& bounds){
     sf::Vector2f position = sprite.getPosition();
-    sf::FloatRect paddleBounds = sprite.getGlobalBounds();
+    const sf::FloatRect paddleBounds = sprite.getGlobalBounds();
     position.x = std::clamp(position.x, bounds.left, bounds.left + bounds.width - paddleBounds.width);
     sprite.setPosition(position);
 }
 
-static inline sf::Vector2f normalize(const sf::Vector2f& source) noexcept{
+static inline sf::Vector2f normalize(const sf::Vector2f& source){
     const float length = std::sqrt((source.x * source.x) + (source.y * source.y));
     if(length == 0){
         return source;

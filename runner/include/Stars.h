@@ -21,15 +21,15 @@ struct Star final{
         sprite.setPosition(xPos, STAR_STARTING_Y);
     }
 
-    void update(float dt) noexcept{
+    void update(float dt) {
         sprite.move(0.0f, speed * dt);
     }
 
-    void maybeWrap(float stageHeight, float stageWidth) noexcept{
-        if(auto pos = sprite.getPosition(); pos.y < stageHeight){
+    void maybeWrap(float stageHeight, float stageWidth) {
+        if(const auto pos = sprite.getPosition(); pos.y < stageHeight){
             return;
         }
-        float xpos = rng().between(STAR_MARGIN_X, stageWidth - STAR_MARGIN_X);
+        const float xpos = rng().between(STAR_MARGIN_X, stageWidth - STAR_MARGIN_X);
         sprite.setPosition(xpos, STAR_STARTING_Y);
     }
 };
@@ -46,20 +46,20 @@ class Stars final{
         }
     }
 public:
-    Stars(const OwningTexture& texture, const MyWindow& window) noexcept
+    Stars(const OwningTexture& texture, const MyWindow& window)
         : stageWidth(window.fwidth()), stageHeight(window.fheight()){
         initializeStars(texture, YELLOW_CONFIG);
         initializeStars(texture, RED_CONFIG);
     }
 
-    void update(float deltatime) noexcept{
+    void update(float deltatime) {
         for(auto& star : stars){
             star.update(deltatime);
             star.maybeWrap(stageHeight, stageWidth);            
         }
     }
 
-    void render(MyWindow& window) const noexcept{
+    void render(MyWindow& window) const {
         for(const auto& star : stars){
             window.draw(star.sprite);
         }

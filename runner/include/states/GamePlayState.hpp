@@ -28,7 +28,7 @@ protected:
         return std::nullopt;
     }
 
-    void stateRender() noexcept override{
+    void stateRender() override{
         stars.render(*window);
         window->draw(scoreText);
         m_player.render(*window);
@@ -43,11 +43,11 @@ public:
         scoreText = createText("Score: 0", font, 50u, sf::Text::Bold, 1100, 5);
     }
 
-    std::optional<StateType> update() noexcept override{
+    std::optional<StateType> update() override{
         if(auto state = commonInput()){
             return state;
         }
-        auto deltaTime = m_clock.restart();
+        const auto deltaTime = m_clock.restart();
         stars.update(deltaTime.asSeconds());
         m_player.update(deltaTime.asSeconds());
         m_ball.update(deltaTime.asSeconds());
@@ -64,7 +64,7 @@ public:
         return std::nullopt;
     }
 
-    void check_collisions() noexcept{
+    void check_collisions(){
         const auto bounds = sf::FloatRect(0.0f, 0.0f, window->fwidth(), window->fheight());
         m_ball.constrainTo(bounds);
         m_player.constrainTo(bounds);
@@ -74,12 +74,12 @@ public:
         }
     }
 
-    void do_score() noexcept{
+    void do_score(){
         score++;
         scoreText.setString(std::format("Score: {}", score));
     }
 
-    void restart() noexcept{
+    void restart(){
         score = 0;
         m_ball = Ball{ballTex};
         m_player = Paddle{playerTex};

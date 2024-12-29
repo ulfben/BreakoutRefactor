@@ -25,7 +25,7 @@ protected:
     Highscore highscore{"assets/HighScore.txt"};
     sf::Text highscoreText;
 
-    std::optional<StateType> commonInput() noexcept{
+    std::optional<StateType> commonInput() {
         sf::Event event;
         while(window->pollEvent(event)){
             if(event.type == sf::Event::Closed){
@@ -40,9 +40,9 @@ protected:
     }
 
     //interface for child states to implement their specific input handling
-    virtual std::optional<StateType> stateInput(const sf::Event& event) noexcept = 0;
+    virtual std::optional<StateType> stateInput(const sf::Event& event) = 0;
 
-    void commonRender() noexcept{
+    void commonRender(){
         window->clear(BG_COLOR);
         stateRender();
         window->draw(highscoreText);
@@ -50,10 +50,10 @@ protected:
     }
 
     //interface for child states to implement their specific rendering
-    virtual void stateRender() noexcept = 0;
+    virtual void stateRender() = 0;
 
 public:
-    explicit State(MyWindow& window, OwningFont& font) noexcept
+    explicit State(MyWindow& window, OwningFont& font)
         : window(&window)
         , font(&font){
         highscoreText = createText(
@@ -64,11 +64,11 @@ public:
 
     virtual ~State() = default;
 
-    virtual std::optional<StateType> update() noexcept{
+    virtual std::optional<StateType> update(){
         return commonInput();
     }
 
-    void render() noexcept{
+    void render(){
         commonRender();
     }
 };

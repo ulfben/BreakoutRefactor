@@ -27,7 +27,7 @@ public:
         }
     }
 
-    sf::FloatRect getBounds() const noexcept{
+    sf::FloatRect getBounds() const {
         if(bricks.empty()){
             return sf::FloatRect();
         }
@@ -68,7 +68,7 @@ public:
             });
     }
 
-    void render(MyWindow& w) const noexcept{
+    void render(MyWindow& w) const {
         w.draw(std::span(bricks));
     }
 };

@@ -12,35 +12,35 @@
 
 class Paddle final{
 public:
-    explicit Paddle(const OwningTexture& texture) noexcept{
+    explicit Paddle(const OwningTexture& texture) {
         sprite.setTexture(texture.get());
         sprite.setPosition(PLAYER_STARTING_POS);
         sprite.setScale(PLAYER_SCALE);
     };
-    void update(float deltatime) noexcept{
+    void update(float deltatime) {
         const auto pressingLeft = sf::Keyboard::isKeyPressed(sf::Keyboard::Left);
         const auto pressingRight = sf::Keyboard::isKeyPressed(sf::Keyboard::Right);       
-        float dir = pressingLeft ? -PLAYER_SPEED : (pressingRight ? PLAYER_SPEED : 0.0f);
+        const float dir = pressingLeft ? -PLAYER_SPEED : (pressingRight ? PLAYER_SPEED : 0.0f);
         sprite.move(dir * deltatime, 0.0f);
     }
-    void render(MyWindow& w) const noexcept{
+    void render(MyWindow& w) const {
         w.draw(sprite);
     }
-    float centerX() const noexcept{
+    float centerX() const {
         return sprite.getPosition().x + sprite.getGlobalBounds().width / 2.0f;
     }
-    float top() const noexcept{
+    float top() const {
         return sprite.getGlobalBounds().top;
     }
-    float bottom() const noexcept{
+    float bottom() const {
         return sprite.getPosition().y + sprite.getGlobalBounds().height;
     }
-    float width() const noexcept{
+    float width() const {
         return sprite.getGlobalBounds().width;
     }
-    void constrainTo(const sf::FloatRect& bounds) noexcept{
+    void constrainTo(const sf::FloatRect& bounds) {
         sf::Vector2f position = sprite.getPosition();  
-        sf::FloatRect paddleBounds = sprite.getGlobalBounds();        
+        const sf::FloatRect paddleBounds = sprite.getGlobalBounds();        
         position.x = std::clamp(position.x, bounds.left, bounds.left + bounds.width - paddleBounds.width);
         sprite.setPosition(position);
     }

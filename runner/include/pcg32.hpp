@@ -17,6 +17,9 @@
 // Satisfies 'UniformRandomBitGenerator' requirements - compatible with std::shuffle, 
 // std::sample, and most std::*_distribution classes.
 
+ #pragma warning(push)
+ #pragma warning(disable: 26493 26472) // "Don't use C-style casts". The C-style casts here make the code more readable and match the reference implementation more closely.
+
 struct PCG32{
     using u64 = std::uint64_t;
     using u32 = std::uint32_t;
@@ -48,25 +51,25 @@ struct PCG32{
         const auto rot = oldstate >> 59u;
         return static_cast<u32>((xorshifted >> rot) | (xorshifted << ((~rot + 1) & 31)));
     }
-
+   
     constexpr result_type next(u32 bound) noexcept{
         //highly performant Lemire's algorithm (Debiased Integer Multiplication) after research by Melissa O'Neill
         // https://www.pcg-random.org/posts/bounded-rands.html        
-        u64 result = u64(next()) * u64(bound);
-        if(u32 lowbits = u32(result); lowbits < bound){
-            u32 threshold = u32(0) - bound;   // Calculate 2^32 - bound for rejection sampling
+        u64 result = u64{next()} * u64{ bound };
+        if(u32 lowbits = static_cast<u32>(result); lowbits < bound){
+            u32 threshold = u32{0} - bound;   // Calculate 2^32 - bound for rejection sampling
             if(threshold >= bound){
                 threshold -= bound;
                 if(threshold >= bound)
                     threshold %= bound;
             }
             while(lowbits < threshold){
-                result = u64(next()) * u64(bound);
-                lowbits = u32(result);
+                result = u64{next()} * u64{ bound };
+                lowbits = static_cast<u32>(result);
             }
         }
         return result >> 32;
-    }
+    }    
 
     constexpr bool coinToss() noexcept{
         return next() & 1; //checks the least significant bit
@@ -123,7 +126,7 @@ struct PCG32{
     }
 
     constexpr void backstep(u64 delta) noexcept{
-        advance(u32(0) - delta);  // going backwards works due to modular arithmetic
+        advance(u32{0} - delta);  // going backwards works due to modular arithmetic
     }
 
     constexpr void set_state(u64 new_state, u64 new_inc) noexcept{
@@ -217,8 +220,11 @@ namespace seed {
     // - Cheap to obtain
     // - Potentially useful as supplementary entropy source
     inline u64 from_stack() noexcept{
-        const auto dummy = 0;  // local variable just for its address
+        constexpr auto dummy = 0;  // local variable just for its address
+        #pragma warning(push)
+#pragma warning(disable: 26490) // Don't use reinterpret_cast
         return splitmix64(reinterpret_cast<std::uintptr_t>(&dummy));
+#pragma warning(pop)
     }
 
     // Hardware entropy
@@ -227,7 +233,7 @@ namespace seed {
     // - May be slow or limited on some platforms
     // - May fall back to pseudo-random implementation
     // - Best option when available but worth having alternatives
-    inline u64 from_entropy() noexcept{
+    inline u64 from_entropy(){
         std::random_device rd;
         const auto entropy = (static_cast<u64>(rd()) << 32) | rd();
         return splitmix64(entropy);
@@ -239,7 +245,7 @@ namespace seed {
     // - Higher overhead
     // - Useful when seed quality is critical
     // - Good for initializing large-state PRNGs
-    inline u64 from_all() noexcept{
+    inline u64 from_all(){
         const auto time = from_time();
         const auto cpu = from_cpu_time();
         const auto stack = from_stack();
@@ -247,7 +253,9 @@ namespace seed {
         return splitmix64(time ^ cpu ^ stack ^ entropy);
     }
 
-    inline u32 to_32(u64 seed) noexcept{
+    constexpr inline u32 to_32(u64 seed) noexcept{
         return static_cast<u32>(seed ^ (seed >> 32)); //XOR-fold to preserve entropy
     }
 }
+
+#pragma warning(pop)

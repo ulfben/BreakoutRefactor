@@ -12,7 +12,7 @@ class MenuState final : public State {
             return std::nullopt;
         }
 
-        void stateRender() noexcept override {
+        void stateRender() override {
             window->draw(startMenuText);
         }
 

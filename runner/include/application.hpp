@@ -31,8 +31,8 @@
 namespace runner {
     class Application final{
     public:
-        Application(){
-            currentState = createState(StateType::Menu);
+        explicit Application(StateType type){
+            currentState = createState(type);
         }
 
         void run(){
@@ -70,7 +70,7 @@ namespace runner {
             }
         }
 
-        void render() noexcept{
+        void render(){
             currentState->render();
         }
     };

@@ -11,7 +11,7 @@ protected:
         return std::nullopt;
     }
 
-    void stateRender() noexcept override{
+    void stateRender() override{
         window->draw(endGameText);
     }
 

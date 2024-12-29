@@ -22,40 +22,40 @@ public:
     auto& get() noexcept{
         return w;
     }
-    void clear(sf::Color c) noexcept{
+    void clear(sf::Color c){
         w.clear(c);
     }
-    void draw(const sf::Drawable& o) noexcept{
+    void draw(const sf::Drawable& o){
         w.draw(o);
     }
     template<std::derived_from<sf::Drawable> T>
-    void draw(std::span<const T> objects) noexcept{
+    void draw(std::span<const T> objects) {
         for(const auto& i : objects){
             w.draw(i);
         }
     }
-    void display() noexcept{
+    void display() {
         w.display();
     }
-    auto width() const noexcept{
+    auto width() const {
         return w.getSize().x;
     }
-    auto height() const noexcept{
+    auto height() const {
         return w.getSize().y;
     }
-    float fwidth() const noexcept{
+    float fwidth() const {
         return static_cast<float>(w.getSize().x);
     }
-    float fheight() const noexcept{
+    float fheight() const {
         return static_cast<float>(w.getSize().y);
     }
-    auto isOpen() const noexcept{
+    auto isOpen() const {
         return w.isOpen();
     }
-    void close() noexcept{
+    void close() {
         w.close();
     }
-    bool pollEvent(sf::Event& event) noexcept{
+    bool pollEvent(sf::Event& event) {
         return w.pollEvent(event);
     }
 };

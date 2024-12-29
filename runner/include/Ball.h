@@ -13,7 +13,7 @@
 
 class Ball final{
 public:
-    explicit Ball(const OwningTexture& texture) noexcept{
+    explicit Ball(const OwningTexture& texture){
         sprite.setTexture(texture.get());
         sprite.setPosition(BALL_STARTING_X, BALL_STARTING_Y);
     };
@@ -24,23 +24,23 @@ public:
         sprite.move(direction.x * vel, direction.y * vel);
     };
 
-    void render(MyWindow& w) const noexcept{
+    void render(MyWindow& w) const {
         w.draw(sprite);
     };
 
-    float centerX() const noexcept{
+    float centerX() const {
         return sprite.getPosition().x + sprite.getGlobalBounds().width / 2.0f;
     }
 
-    float top() const noexcept{
+    float top() const {
         return sprite.getGlobalBounds().top;
     }
 
-    float height() const noexcept{
+    float height() const {
         return sprite.getGlobalBounds().height;
     }
 
-    void checkCollisionWith(const Paddle& paddle) noexcept{
+    void checkCollisionWith(const Paddle& paddle) {
         if(!is_colliding(paddle.sprite, sprite)){
             return;
         }                                
@@ -55,7 +55,7 @@ public:
         );
     }
 
-    bool checkCollisionWith(Wall& wall) noexcept{
+    bool checkCollisionWith(Wall& wall) {
         if(!is_colliding(sprite, wall.getBounds())){
             return false;
         }
@@ -83,7 +83,7 @@ public:
         return false;
     }
 
-    void constrainTo(const sf::FloatRect bounds) noexcept{
+    void constrainTo(const sf::FloatRect bounds) {
         const auto ballBounds = sprite.getGlobalBounds();
         const bool hitLeft = ballBounds.left < bounds.left;
         const bool hitRight = ballBounds.left + ballBounds.width > bounds.left + bounds.width;
@@ -99,7 +99,7 @@ public:
         }
     }
 
-    bool isBehind(const Paddle& other) const noexcept{
+    bool isBehind(const Paddle& other) const {
         return top() > other.bottom();
     }
 
