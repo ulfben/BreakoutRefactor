@@ -16,7 +16,7 @@ protected:
     }
 
 public:
-    EndGameState(MyWindow& window, OwningFont& font, const std::string& message)
+    EndGameState(MyWindow& window, OwningFont& font, std::string_view message)
         : State(window, font){
         endGameText = createText(message, font, 50u, sf::Text::Bold, 550, 300);
     }

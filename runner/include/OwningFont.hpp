@@ -2,7 +2,11 @@
 #include <stdexcept>
 #include <string_view>
 #include <format>
-#include <SFML/Graphics/Font.hpp>
+#include <CodeAnalysis/warnings.h>
+#pragma warning(push)
+#pragma warning(disable:ALL_CODE_ANALYSIS_WARNINGS)
+#include "SFML/Graphics/Font.hpp"
+#pragma warning(pop)
 class OwningFont final{
     sf::Font font;
 public: 

@@ -3,7 +3,11 @@
 #include <string_view>
 #include <format>
 #include <span>
-#include <SFML/Graphics/RenderWindow.hpp>
+#include <CodeAnalysis/warnings.h>
+#pragma warning(push)
+#pragma warning(disable:ALL_CODE_ANALYSIS_WARNINGS)
+#include "SFML/Graphics/RenderWindow.hpp"
+#pragma warning(pop)   
 class MyWindow final{
     sf::RenderWindow w;
 

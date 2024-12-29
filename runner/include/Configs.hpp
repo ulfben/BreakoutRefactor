@@ -1,7 +1,11 @@
 #pragma once
 #include "pcg32.hpp"
+#include <CodeAnalysis/warnings.h>
+#pragma warning(push)
+#pragma warning(disable:ALL_CODE_ANALYSIS_WARNINGS)
 #include "SFML/Graphics/Sprite.hpp"
 #include "SFML/Graphics/Text.hpp"
+#pragma warning(pop)
 #include "OwningFont.hpp"
 #include <string_view>
 #include <cmath>
@@ -35,9 +39,9 @@ static constexpr float STAR_STARTING_Y = -100.0f;
 static constexpr float STAR_SPEED_VARIATION = 150.0f;
 
 //don't be fooled. This is a global variable. Initialization is thread-safe, but 
-// access (using the rng) is not. This is fine for our purposes.
-static inline [[nodiscard]] PCG32& rng(){
-    static PCG32 r{};
+// access (using the rng) is not. This is fine for our (single-threaded) purposes.
+[[nodiscard]] inline PCG32& rng() noexcept{    
+    static PCG32 r(seed::from_stack());
     return r;
 };
 

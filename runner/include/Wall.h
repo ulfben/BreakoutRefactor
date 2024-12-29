@@ -1,11 +1,15 @@
 #pragma once
 #include <vector>
 #include <algorithm>
+#include <CodeAnalysis/warnings.h>
+#pragma warning(push)
+#pragma warning(disable:ALL_CODE_ANALYSIS_WARNINGS)
 #include "SFML/Graphics/Sprite.hpp"
 #include "SFML/Graphics/RenderWindow.hpp"
+#pragma warning(pop)
 #include "OwningTexture.hpp"
 #include "MyWindow.hpp"
-#include <algorithm>
+
 class Wall final{
     static constexpr auto BRICK_COUNT = 13;
     static constexpr auto BRICK_WIDTH = 100;

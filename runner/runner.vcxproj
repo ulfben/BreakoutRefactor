@@ -48,12 +48,14 @@
     <IntDir>..\build\$(ProjectName)\$(Configuration.toLower())\</IntDir>
     <TargetName>$(ProjectName).$(Configuration.toLower())</TargetName>
     <LinkIncremental>false</LinkIncremental>
+    <CodeAnalysisRuleSet>CppCoreCheckRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>..\build\</OutDir>
     <IntDir>..\build\$(ProjectName)\$(Configuration.toLower())\</IntDir>
     <TargetName>$(ProjectName).$(Configuration.toLower())</TargetName>
     <LinkIncremental>false</LinkIncremental>
+    <CodeAnalysisRuleSet>CppCoreCheckRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -61,13 +63,16 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>SFML_STATIC;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
       <AdditionalIncludeDirectories>include\;..\vendor\sfml\include\;</AdditionalIncludeDirectories>
       <TreatWarningAsError>true</TreatWarningAsError>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <FloatingPointModel>Fast</FloatingPointModel>
       <DisableSpecificWarnings>4100;4189;4505;</DisableSpecificWarnings>
+	  <ExternalWarningLevel>TurnOffAllWarnings</ExternalWarningLevel>
+		<DisableAnalyzeExternal>true</DisableAnalyzeExternal>
+		<ExternalTemplatesDiagnostics>false</ExternalTemplatesDiagnostics>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -85,12 +90,15 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>SFML_STATIC;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
       <AdditionalIncludeDirectories>include\;..\vendor\sfml\include\;</AdditionalIncludeDirectories>
       <TreatWarningAsError>true</TreatWarningAsError>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <FloatingPointModel>Fast</FloatingPointModel>
       <DisableSpecificWarnings>4100;4189;4505;</DisableSpecificWarnings>
+	  <ExternalWarningLevel>TurnOffAllWarnings</ExternalWarningLevel>
+<DisableAnalyzeExternal>true</DisableAnalyzeExternal>
+<ExternalTemplatesDiagnostics>false</ExternalTemplatesDiagnostics>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

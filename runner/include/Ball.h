@@ -1,7 +1,11 @@
 #pragma once
 #include "Configs.hpp"
+#include <CodeAnalysis/warnings.h>
+#pragma warning(push)
+#pragma warning(disable:ALL_CODE_ANALYSIS_WARNINGS)
 #include "SFML/Graphics/Sprite.hpp"
 #include "SFML/System/Vector2.hpp"
+#pragma warning(pop)
 #include "OwningTexture.hpp"
 #include "Paddle.h"
 #include "MyWindow.hpp"

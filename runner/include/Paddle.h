@@ -1,9 +1,13 @@
 #pragma once
 #include "Configs.hpp"
-#include "SFML/Graphics/Sprite.hpp"
 #include "OwningTexture.hpp"
+#include <CodeAnalysis/warnings.h>
+#pragma warning(push)
+#pragma warning(disable:ALL_CODE_ANALYSIS_WARNINGS)
+#include "SFML/Graphics/Sprite.hpp"
 #include "SFML/System/Vector2.hpp"
 #include "SFML/Window/Keyboard.hpp"
+#pragma warning(pop)
 #include "MyWindow.hpp"
 
 class Paddle final{

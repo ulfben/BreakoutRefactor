@@ -3,8 +3,12 @@
 #include "Configs.hpp"
 #include "MyWindow.hpp"
 #include "OwningTexture.hpp"
+#include <CodeAnalysis/warnings.h>
+#pragma warning(push)
+#pragma warning(disable:ALL_CODE_ANALYSIS_WARNINGS)
 #include "SFML/Graphics/Sprite.hpp"
 #include "SFML/System.hpp"
+#pragma warning(pop)
 #include <vector>
 
 struct Star final{

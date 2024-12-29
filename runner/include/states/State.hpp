@@ -4,8 +4,12 @@
 #include "OwningFont.hpp"
 #include "MyWindow.hpp"
 #include "Highscore.hpp"
+#include <CodeAnalysis/warnings.h>
+#pragma warning(push)
+#pragma warning(disable:ALL_CODE_ANALYSIS_WARNINGS)
 #include "SFML/Graphics/Text.hpp"
 #include "SFML/Window/Event.hpp"
+#pragma warning(pop)
 
 enum class StateType{
     Menu,

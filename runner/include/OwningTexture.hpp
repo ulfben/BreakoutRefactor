@@ -2,7 +2,11 @@
 #include <stdexcept>
 #include <string_view>
 #include <format>
-#include <SFML/Graphics/Texture.hpp>
+#include <CodeAnalysis/warnings.h>
+#pragma warning(push)
+#pragma warning(disable:ALL_CODE_ANALYSIS_WARNINGS)
+#include "SFML/Graphics/Texture.hpp"
+#pragma warning(pop)
 class OwningTexture final{
     sf::Texture tex;
 public: 
